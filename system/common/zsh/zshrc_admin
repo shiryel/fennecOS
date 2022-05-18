@@ -1,0 +1,68 @@
+zap_a_backup() {
+  set -uo pipefail
+
+  #
+  # format
+  #
+
+  sudo sgdisk --zap-all $1
+  sudo sgdisk --clear \
+    --new=1:0:-300GiB --typecode=1:8300 --change-name=1:cryptbackup1 \
+    --new=2:0:0 --typecode=2:8300 --change-name=2:cryptbackup2 $1
+
+  sudo cryptsetup luksFormat "${1}1"
+  sudo cryptsetup luksFormat "${1}2"
+
+  sudo cryptsetup open "${1}1" backup1
+  sudo cryptsetup open "${1}2" backup2
+
+  sudo mkfs.btrfs --force --label backup1 /dev/mapper/backup1
+  sudo mkfs.btrfs --force --label backup2 /dev/mapper/backup2
+
+  #
+  # create subvolumes
+  #
+
+  o="defaults,x-mount.mkdir"
+  o_btrfs="$o,compress=zstd:14,noatime"
+
+  sudo mount -t btrfs -o $o_btrfs /dev/mapper/backup1 /keep/mnt
+  sudo mount -t btrfs -o $o_btrfs /dev/mapper/backup2 /keep/mnt2
+
+  sudo btrfs subvolume create /keep/mnt/@
+  sudo btrfs subvolume create /keep/mnt2/@
+
+  sudo umount /keep/mnt
+  sudo umount /keep/mnt2
+}
+
+mount_backup() {
+  set -uo pipefail
+
+  sudo cryptsetup open "${1}1" backup1
+  sudo cryptsetup open "${1}2" backup2
+
+  o="defaults,x-mount.mkdir"
+  o_btrfs="$o,compress=zstd:14,noatime,subvol=@"
+  
+  sudo mount -t btrfs -o $o_btrfs /dev/mapper/backup1 /keep/mnt
+  sudo mount -t btrfs -o $o_btrfs /dev/mapper/backup2 /keep/mnt2
+}
+
+# TUTORIAL:
+# https://btrfs.wiki.kernel.org/index.php/Incremental_Backup
+# https://cnx.srht.site/blog/butter/index.html
+do_first_backup() {
+  set -uo pipefail
+
+  # prepare dir
+  backup_dir=/keep/backup/data-`date +%d-%m-%Y`
+
+  # create snapshot
+  sudo btrfs subvolume snapshot -r /keep/data $backup_dir
+  sudo sync
+
+  # send snapshot
+  sudo btrfs send $backup_dir | sudo btrfs receive /keep/mnt/data
+  sudo sync
+}
