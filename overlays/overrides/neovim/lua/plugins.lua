@@ -1,3 +1,19 @@
+--require('telescope').setup {
+--  extensions = {
+--    fzf = {
+--      fuzzy = true,                    -- false will only do exact matching
+--      override_generic_sorter = true,  -- override the generic sorter
+--      override_file_sorter = true,     -- override the file sorter
+--      case_mode = "smart_case"         -- or "ignore_case" or "respect_case"
+--                                       -- the default case_mode is "smart_case"
+--    }
+--  }
+--}
+-- FZF does not work with live_grep
+-- :Telescope fzf is a bug
+-- Needs to be called right after telesctope to get fzf loaded
+require('telescope').load_extension('fzf')
+
 -- Icons for CMP
 local kind_icons = {
   Text = "",
@@ -87,7 +103,11 @@ cmp.setup.cmdline('/', {
 require("nvim-treesitter.configs").setup({
   highlight = {
     enable = true, 
-    additional_vim_regex_highlighting = { "kotlin" }
+    additional_vim_regex_highlighting = { "kotlin" },
+    -- some files are too big for treesitter to work...
+    disable = function(lang, bufnr)
+      return (vim.api.nvim_buf_line_count(bufnr) > 20000) or false
+    end
   },
   textobjects = {
     enable = true
@@ -107,6 +127,24 @@ require("nvim-treesitter.configs").setup({
 })
 
 require("nvim-tree").setup({
+  on_attach = function(bufnr) 
+    -- use :NvimTreeGenerateOnAttach to generate this function
+    local function noremap(bind, command, desc)
+      return vim.keymap.set("n", bind, command, {buffer = bufnr, noremap = true, silent = true, nowait = true, desc = 'nvim-tree: ' .. desc})
+    end
+    local api = require('nvim-tree.api')
+    api.config.mappings.default_on_attach(bufnr) -- default mapping
+
+    noremap('<C-up>', api.tree.change_root_to_parent, "Dir up")
+    noremap('s', api.node.open.vertical, "Open: Vertical Split")
+    noremap('v', api.node.open.horizontal, "Open: Horizontal Split")
+    noremap('?', api.tree.toggle_help, "Help")
+    noremap('P', 
+      function()
+        local node = api.tree.get_node_under_cursor()
+        print(node.absolute_path)
+      end, "Print Node Path")
+  end,
   disable_netrw = true,
   hijack_netrw = false,
   sort_by = "case_sensitive",
@@ -130,18 +168,10 @@ require("nvim-tree").setup({
     enable = true
   },
   view = {
-    hide_root_folder = true,
-    width = 30,
-    mappings = {
-      list = {
-        { key = "<C-up>", action = "dir_up" },
-        { key = "s", action = "vsplit" },
-        { key = "v", action = "split" },
-        { key = "?", action = "toggle_help" },
-      },
-    },
+    width = 36
   },
   renderer = {
+    root_folder_label = false,
     add_trailing = true
   },
   filters = {
@@ -190,7 +220,21 @@ require("which-key").setup({
     }
   },
   ignore_missings = false, 
-  triggers_blacklist = {i = {"j", "k"}, v = {"j", "k"}}
+  triggers_blacklist = {i = {"j", "k"}, v = {"j", "k"}},
+  triggers_nowait = {
+    -- leader
+    "<space>",
+    -- marks
+    "`",
+    "'",
+    "g`",
+    "g'",
+    -- registers
+    '"',
+    "<c-r>",
+    -- spelling
+    "z=",
+  }
 })
 
 require("ccc").setup({

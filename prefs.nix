@@ -1,4 +1,5 @@
 { lib }:
+
 {
   unfree_packages =
     (pkg: builtins.elem (lib.getName pkg) [
@@ -9,6 +10,7 @@
       "postman"
       "corefonts"
       "tools"
+      #"vscode" # for vscode-langservers-extracted
       #"android-studio-canary"
     ]);
 

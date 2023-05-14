@@ -23,7 +23,7 @@ let
     dev = true; # required for vulkan
     net = true;
     tmp = true;
-    xdg = prefs.steam.vr_integration;
+    xdg = true; # if prefs.steam.vr_integration then true else "ro";
     binds =
       [
         # you can run a proton game with the TARGET: explorer.exe
@@ -39,11 +39,11 @@ let
       "--setenv STEAM_EXTRA_COMPAT_TOOLS_PATHS ${
             prev.stdenv.mkDerivation rec {
               pname = "proton-ge-custom";
-              version = "GE-Proton7-53";
+              version = "GE-Proton8-3";
 
               src = prev.fetchurl {
                 url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${version}/${version}.tar.gz";
-                sha256 = "sha256-J3e/WM/Cms8uqCOcjIQjFQZJL++rrIenhnpLsCbwwXA=";
+                sha256 = "sha256-JYGwb0LhIs6B2/OHiU+mJ/dAAS+Dg+MrVksAsn6IS9g=";
               };
 
               buildCommand = ''
@@ -62,6 +62,32 @@ in
 {
   _no_bwrap = prev;
 
+  # Generic Bwrap to test configs
+  generic-bwrap = (prev.writeScriptBin "wrap"
+    ''
+      #!${prev.stdenv.shell}
+      mkdir -p ~/bwrap/generic_wrap
+
+      exec ${lib.getBin prev.bubblewrap}/bin/bwrap \
+        --ro-bind /run /run \
+        --ro-bind /bin/sh /bin/sh \
+        --ro-bind /bin/sh /bin/bash \
+        --ro-bind /etc /etc \
+        --ro-bind /nix /nix \
+        --ro-bind /sys /sys \
+        --ro-bind /var /var \
+        --ro-bind /usr /usr \
+        --dev /dev \
+        --proc /proc \
+        --tmpfs /tmp \
+        --tmpfs /home \
+        --die-with-parent \
+        --unshare-all \
+        --new-session \
+        --bind-try ~/bwrap/generic_wrap ~/ \
+        $@
+    '');
+
   ##############
   # WORKSPACES #
   ##############
@@ -72,11 +98,11 @@ in
   #   (maybe fix with rootless mode?)
 
   shiryel-workspace =
-
     (lib.fhsIt
       {
         name = "shiryel-workspace";
-        exec = "kitty";
+        exec = "foot";
+        #xdg = true;
         dev = true;
         net = true;
         binds = [
@@ -86,7 +112,7 @@ in
           }
         ];
         ro_binds = [
-          "~/.config/kitty/kitty.conf"
+          "~/.config/foot/foot.ini"
           "~/.zshrc"
           "~/.zshenv"
           "~/.zlogin"
@@ -94,8 +120,9 @@ in
         ];
       }
       (pkgs: with pkgs; [
-        kitty
-        #flutter
+        foot
+        flutter.passthru.unwrapped
+        # flutter
         #android-studio-canary
       ])
     );
@@ -146,6 +173,13 @@ in
         package = prev.steam.run;
       } // steam_common));
 
+  BeatSaberModManager =
+    (lib.bwrapIt
+      ({
+        name = "BeatSaberModManager";
+        package = prev.BeatSaberModManager;
+      } // steam_common));
+
   protontricks =
     (lib.bwrapIt
       ({
@@ -187,7 +221,7 @@ in
           }
         ] ++ game_binds;
       }
-      (pkgs: with pkgs; [
+      (pkgs: [
         prev.wineWowPackages.waylandFull
         #pkgs.wineWowPackages.full
         pkgs.winetricks
@@ -196,7 +230,14 @@ in
   lutris =
     (lib.bwrapIt {
       name = "lutris";
-      package = prev.lutris;
+      package = prev.lutris.override {
+        extraLibraries = pkgs: [
+          pkgs.wine
+        ];
+        extraPkgs = pkgs: [
+          pkgs.wine
+        ];
+      };
       dri = true; # required for vulkan
       net = true;
       xdg = true;
@@ -272,6 +313,7 @@ in
       name = "tor-browser";
       package = prev.tor-browser-bundle-bin;
       net = true;
+      xdg = true;
       binds = [
         {
           from = "~/bwrap/tor-browser";
@@ -318,7 +360,7 @@ in
       package = prev.tdesktop;
       net = true;
       dri = true;
-      #xdg = true; # fixes gtk file picker
+      xdg = true;
       binds = [
         {
           from = "~/bwrap/telegram";
@@ -326,7 +368,7 @@ in
         }
       ] ++ common_binds ++ data_binds;
       custom_config = [
-        #"--setenv XDG_CURRENT_DESKTOP sway:gnome" # makes gtk file picker work
+        "--setenv XDG_CURRENT_DESKTOP sway:gnome" # makes gtk file picker work
       ];
     });
 
@@ -364,6 +406,8 @@ in
 
   neovim = (lib.bwrapIt {
     name = "nvim";
+    # neovim is already wrapped on the pkgs/top-level/all-packages.nix from nixpkgs
+    package = prev.neovim;
     net = true;
     tmp = true;
     binds = [
@@ -376,8 +420,20 @@ in
       "~/logs"
       "~/.mix"
     ];
-    # neovim is already wrapped on the pkgs/top-level/all-packages.nix from nixpkgs
-    package = prev.neovim;
+  });
+
+  livebook = (lib.bwrapIt {
+    name = "livebook";
+    package = prev.livebook;
+    net = true;
+    dev = true;
+    binds = [
+      {
+        from = "~/bwrap/livebook";
+        to = "~/";
+      }
+      "~/projects/codes/models/"
+    ];
   });
 
   insomnia =
@@ -421,41 +477,6 @@ in
       ];
     });
 
-  # keeps connecting in the internet even with the plugins off, so...
-  glances =
-    (lib.bwrapIt {
-      name = "glances";
-      net = false;
-      dev = true;
-      unshare = "";
-      package = prev.glances;
-    });
-
-  # Generic Bwrap to test configs
-  generic-bwrap = (prev.writeScriptBin "wrap"
-    ''
-      #!${prev.stdenv.shell}
-      mkdir -p ~/bwrap/generic_wrap
-
-      exec ${lib.getBin prev.bubblewrap}/bin/bwrap \
-        --ro-bind /run /run \
-        --ro-bind /bin/sh /bin/sh \
-        --ro-bind /bin/sh /bin/bash \
-        --ro-bind /etc /etc \
-        --ro-bind /nix /nix \
-        --ro-bind /sys /sys \
-        --ro-bind /var /var \
-        --ro-bind /usr /usr \
-        --dev /dev \
-        --proc /proc \
-        --tmpfs /tmp \
-        --tmpfs /home \
-        --die-with-parent \
-        --unshare-all \
-        --new-session \
-        --bind-try ~/bwrap/generic_wrap ~/ \
-        $@
-    '');
 
   ##########
   # UNFREE #

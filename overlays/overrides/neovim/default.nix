@@ -3,7 +3,7 @@
 final: prev:
 let
   vim-colortemplate = prev.vimUtils.buildVimPlugin {
-    pname = "janet-vim";
+    pname = "colortemplate-vim";
     version = "git";
     src = prev.fetchFromGitHub {
       owner = "lifepillar";
@@ -61,6 +61,7 @@ in
           # SYNTAX HIGHLIGHT
           #
           #(nvim-treesitter.withPlugins (plugins: tree-sitter.allGrammars))
+          # remove in nvim 0.10 ? (https://github.com/nvim-telescope/telescope.nvim/issues/2498)
           (nvim-treesitter.withPlugins (plugins: with plugins; [
             # common
             tree-sitter-markdown
@@ -114,7 +115,9 @@ in
           #
           nvim-tree-lua
           nvim-web-devicons
-          fzf-vim
+          plenary-nvim
+          telescope-nvim
+          telescope-fzf-native-nvim
           #
           # EXTRA
           #

@@ -71,6 +71,7 @@ Also, you may want to take a look on the flakes that I took inspiration:
 - `https://www.cloudflare.com/ssl/encrypted-sni/` - check DNSSEC (SNI will be unsuported)
 
 #### Systemd
+- `systemctl --user --type=target` - check available user targets
 - `systemctl --user --failed` - check failed user services
 - `systemctl --failed` - check failed system services
 - `systemd-analyze security` - check system security

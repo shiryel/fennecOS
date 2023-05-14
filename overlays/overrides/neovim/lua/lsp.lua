@@ -1,10 +1,14 @@
 -- https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.servercapabilities
 local function on_attach(client, bufnr)
+  -- NOTE: telescope is replacing: d.open_float, b.definition, 
+  -- b.implementation, b.references and b.type_definition
+  local tb = require('telescope.builtin')
+
   local cap = client.server_capabilities
   -- inspect(cap)
 
-  local function opts(desc) 
-    return { noremap = true, silent = true, buffer = bufnr, desc = desc }
+  local function noremap(bind, command, desc)
+    return vim.keymap.set("n", bind, command, {buffer = bufnr, silent = true, noremap = true, desc = desc})
   end
 
   -- COMPLETION --
@@ -17,12 +21,12 @@ local function on_attach(client, bufnr)
   -- :help vim.diagnostic.*
   local d = vim.diagnostic
 
-  vim.keymap.set("n", "<leader>qq", d.open_float, opts("open diagnostics float window"))
-  vim.keymap.set("n", "<leader>ql", d.setloclist, opts("open diagnostics buffer"))
-  vim.keymap.set("n", "<leader>qh", d.show, opts("show diagnostics"))
-  vim.keymap.set("n", "<leader>qH", d.hide, opts("hide diagnostics"))
-  vim.keymap.set("n", "<leader>qn", d.get_next, opts("get next diagnostic"))
-  vim.keymap.set("n", "<leader>qp", d.get_prev, opts("get previous diagnostic"))
+  noremap("<leader>qq", tb.diagnostics, "open diagnostics float window")
+  noremap("<leader>ql", d.setloclist, "open diagnostics buffer")
+  noremap("<leader>qh", d.show, "show diagnostics")
+  noremap("<leader>qH", d.hide, "hide diagnostics")
+  noremap("<leader>qn", d.get_next, "get next diagnostic")
+  noremap("<leader>qp", d.get_prev, "get previous diagnostic")
 
   -- FORMATING --
 
@@ -31,12 +35,11 @@ local function on_attach(client, bufnr)
 
   -- Formats the current buffer
   if cap.documentFormattingProvider then
-    -- TODO: add b.format {async = true}
-    vim.keymap.set("n", "<leader>f", b.format, opts("format"))
+    noremap("<leader>f", b.format, "format")
   end
   -- Formats a given range
   if cap.documentRangeFormattingProvider then
-    vim.keymap.set("n", "<leader>F", b.range_formatting, opts("format range"))
+    noremap("<leader>F", b.range_formatting, "format range")
   end
 
   -- GO TO --
@@ -44,25 +47,25 @@ local function on_attach(client, bufnr)
   -- Jumps to the definition of the symbol under the cursor
   -- Jumps to the declaration of the symbol under the cursor (less used by LSPs)
   if cap.definitionProvider then
-    vim.keymap.set("n", "gd", b.definition, opts("go to definition"))
+    noremap("gd", tb.lsp_definitions, "go to definition")
     if cap.declarationProvider then
-      vim.keymap.set("n", "gD", b.declaration, opts("go to declaration"))
+      noremap("gD", b.declaration, "go to declaration")
     else
-      vim.keymap.set("n", "gD", b.definition, opts("go to definition"))
+      noremap("gD", tb.lsp_definitions, "go to definition")
     end
   else
     if cap.declarationProvider then
-      vim.keymap.set("n", "gd", b.declaration, opts("go to declaration"))
-      vim.keymap.set("n", "gD", b.declaration, opts("go to declaration"))
+      noremap("gd", b.declaration, "go to declaration")
+      noremap("gD", b.declaration, "go to declaration")
     end
   end
   -- Jumps to the definition of the type of the symbol under the cursor
   if cap.typeDefinitionProvider then
-    vim.keymap.set("n", "<leader>t", b.type_definition, opts("go to type definition"))
+    noremap("<leader>t", tb.lsp_type_definitions, "go to type definition")
   end
   -- Lists all the references to the symbol under the cursor in the quickfix window
   if cap.referenceProvider then
-    vim.keymap.set("n", "<leader>r", b.references, opts("list references to symbol"))
+    noremap("<leader>r", tb.lsp_references, "list references to symbol")
   end
 
   -- HELPERS --
@@ -70,17 +73,17 @@ local function on_attach(client, bufnr)
   -- Displays hover information about the symbol under the cursor in a floating
   -- window. Calling the function twice will jump into the floating window
   if cap.hoverProvider then
-    vim.keymap.set("n", "<leader>h", b.hover, opts("show symbol info"))
+    noremap("<leader>h", b.hover, "show symbol info")
   end
   -- Displays signature information about the symbol under the cursor in a
   -- floating window
   if cap.signatureHelpProvider then
-    vim.keymap.set("n", "<leader>H", b.signature_help, opts("show symbol signature"))
+    noremap("<leader>H", b.signature_help, "show symbol signature")
   end
   -- Lists all the implementations for the symbol under the cursor in the
   -- quickfix window
   if cap.implementationProvider then
-    vim.keymap.set("n", "<leader>i", b.implementation, opts("list symbol's implementations"))
+    noremap("<leader>i", tb.lsp_implementations, "list symbol's implementations")
   end
 
   -- WORKSPACES --
@@ -89,23 +92,23 @@ local function on_attach(client, bufnr)
   -- provided, the user will be prompted for a path using |input()|
   --if cap.foldingRangeProvider then
   if cap.workspaceClientCapabilities then
-    vim.keymap.set("n", "<leader>wa", b.add_workspace_folder, opts("add workspace folder"))
-    vim.keymap.set("n", "<leader>wl", b.list_workspace_folders, opts("list workspace folders"))
-    vim.keymap.set("n", "<leader>wd", b.remove_workspace_folder, opts("remove workspace folder"))
+    noremap("<leader>wa", b.add_workspace_folder, "add workspace folder")
+    noremap("<leader>wl", b.list_workspace_folders, "list workspace folders")
+    noremap("<leader>wd", b.remove_workspace_folder, "remove workspace folder")
   end
   -- Lists all symbols in the current workspace in the quickfix window.
   -- The list is filtered against {query}; if the argument is omitted from the
   -- call, the user is prompted to enter a string on the command line. An empty
   -- string means no filtering is done
   if cap.workspaceSymbolProvider then
-    vim.keymap.set("n", "<leader>ws", b.workspace_symbol, opts("list symbols on workspace"))
+    noremap("<leader>ws", b.workspace_symbol, "list symbols on workspace")
   end
 
   -- RENAME --
 
   -- Renames all references to the symbol under the cursor
   if cap.renameProvider then
-    vim.keymap.set("n", "<leader>rn", b.rename, opts("rename all references"))
+    noremap("<leader>rn", b.rename, "rename all references")
   end
 
   -- HIGHLIGHT --
@@ -195,10 +198,24 @@ lspconfig.kotlin_language_server.setup({
 })
 
 -- NIX
-lspconfig.rnix.setup({
+--lspconfig.rnix.setup({
+--  on_attach = on_attach, 
+--  capabilities = capabilities(), 
+--  cmd = {"rnix-lsp"}
+--})
+
+-- NIX
+lspconfig.nil_ls.setup({
   on_attach = on_attach, 
   capabilities = capabilities(), 
-  cmd = {"rnix-lsp"}
+  cmd = {"nil"},
+  settings = {
+    ['nil'] = {
+      formatting = {
+        command = {"nixpkgs-fmt"}
+      }
+    }
+  }
 })
 
 -- C
@@ -221,6 +238,13 @@ lspconfig.hls.setup({
   on_attach = on_attach, 
   capabilities = capabilities(), 
   cmd = {"haskell-language-server"}
+})
+
+-- PYTHON
+lspconfig.pylsp.setup({
+  on_attach = on_attach, 
+  capabilities = capabilities(),
+  cmd = {"pylsp"}
 })
 
 -- JS

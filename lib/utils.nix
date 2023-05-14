@@ -60,7 +60,7 @@ rec {
 
   # Modify the name field of an attrset by mapping it through a function.
   mapName = f: attrs:
-    assert assertMsg (isFunction f) f;
+    #assert assertMsg (isFunction f) f;
     assert assertMsg (isAttrs attrs) attrs;
     attrs // { name = f attrs.name; };
 
