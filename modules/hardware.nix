@@ -37,7 +37,7 @@ in
 
     # Some softwares require these paths for hardware acceleration or for using python GPU libs
     systemd.tmpfiles.rules = [
-      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.hip}"
+      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
       "L+    /opt/amdgpu   -    -    -     -    ${pkgs.libdrm}"
     ];
 
@@ -80,8 +80,8 @@ in
       # vulkan-headers
       # vulkan-extension-layer
 
-      rocminfo
-      rocm-smi # ROCm System Management Interface 
+      rocmPackages.rocminfo
+      rocmPackages.rocm-smi # ROCm System Management Interface 
 
       corectrl
     ];

@@ -7,23 +7,22 @@ let
 
   rocmPkgs = with pkgs; [
     # maybe not necessary
-    rocm-cmake
-    rocm-comgr
-    rocm-device-libs
-    rocm-smi
-    rocm-thunk
-    rocmlir
-    rocmlir-rock
+    rocmPackages.rocm-cmake
+    rocmPackages.rocm-comgr
+    rocmPackages.rocm-device-libs
+    rocmPackages.rocm-smi
+    rocmPackages.rocm-thunk
+    rocmPackages.rocmlir
+    rocmPackages.rocmlir-rock
 
     #llvmPackages_rocm.clang
     llvmPackages_rocm.clang-unwrapped.out
     hip-amd
 
     # absolutelly necessary:
-    rocm-core
-    rocm-runtime # hsa-runtime64
-    rocminfo
-    hip
+    rocmPackages.rocm-core
+    rocmPackages.rocm-runtime # hsa-runtime64
+    rocmPackages.clr # hip
     miopen
     rocblas
     rocrand

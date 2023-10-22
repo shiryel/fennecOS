@@ -435,6 +435,26 @@ ffmpeg_slice() {
   ffmpeg -i "$1" -c:a copy -c:v copy -ss "$2" -to "$3" "$4"
 }
 
+ffmpeg_265_low_quality() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+
+  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30,scale_vaapi=w=1280:h=720' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
+}
+
+ffmpeg_265_medium_quality() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+
+  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
+}
+
 ffmpeg_vp9() {
   if [[ $# -ne 2 ]]; then
     echo "only can have the input and output"
