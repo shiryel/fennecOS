@@ -29,7 +29,7 @@
 #
 ###########################################################
 
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   networking = {
@@ -72,7 +72,7 @@
         firefox = lib.snitchAllowPath "${bypassBwrap firefox}/lib/firefox/firefox";
         dnscrypt-proxy = lib.snitchAllowPath "${dnscrypt-proxy2}/bin/dnscrypt-proxy";
         telegram = lib.snitchAllowPath "${bypassBwrap tdesktop}/bin/.telegram-desktop-wrapped";
-        discord-canary = lib.snitchAllowPath "${bypassBwrap discord-canary}/opt/DiscordCanary/.DiscordCanary-wrapped";
+        discord = lib.snitchAllowPath "${bypassBwrap discord}/opt/Discord/.Discord-wrapped";
         thunderbird = lib.snitchAllowPath "${bypassBwrap thunderbird}/lib/thunderbird/thunderbird";
         #chromium = lib.snitchAllowPath "${bypassBwrap chromium}/libexec/chromium/chromium";
         #freshclam = lib.snitchAllowPath "${clamav}/bin/freshclam";
@@ -136,7 +136,7 @@
   # (adds +6 seconds to the `systemd-analyze critical-chain`)
   #systemd.services.NetworkManager-wait-online.enable = false;
 
-  users.extraGroups.networkmanager.members = [ "shiryel" "admin" ];
+  users.extraGroups.networkmanager.members = [ config.myNixOS.mainUser ];
 
   # FIXES: failed to sufficiently increase receive buffer size (from dnscrypt-proxy2.service)
   # https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size

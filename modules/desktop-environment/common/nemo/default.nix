@@ -22,5 +22,12 @@
       source = ./actions;
       recursive = true;
     };
+
+    # TODO: giving permission denied
+    xdg.dataFile."nemo/actions/action_scripts/" = {
+      source = ./action_scripts;
+      recursive = true;
+      executable = true;
+    };
   };
 }

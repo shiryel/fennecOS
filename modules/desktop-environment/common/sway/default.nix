@@ -351,7 +351,7 @@ in
           # exec telegram if 2 monitors
           exec swaymsg -t get_outputs | ${pkgs.jq}/bin/jq -e '.[1]' && swaymsg 'workspace 12:; exec ${pkgs.tdesktop}/bin/telegram-desktop'
           # exec discord if 3 monitors
-          exec swaymsg -t get_outputs | ${pkgs.jq}/bin/jq -e '.[2]' && swaymsg 'workspace 13:d; exec "${pkgs.foot}/bin/foot -e ${pkgs.btop}/bin/btop"; layout toggle split; exec ${pkgs.discord-canary}/bin/discordcanary'
+          exec swaymsg -t get_outputs | ${pkgs.jq}/bin/jq -e '.[2]' && swaymsg 'workspace 13:d; exec "${pkgs.foot}/bin/foot -e ${pkgs.btop}/bin/btop"; layout toggle split; exec ${pkgs.discord}/bin/discord'
 
           # RENDER TIME ADJUSTEMENTS
           # Change this if you get stutters

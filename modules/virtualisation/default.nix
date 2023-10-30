@@ -1,6 +1,9 @@
 ###########################################################
 # This file configures the virtualisations on the machine
 #
+# Use "ctrl alt 2" to switch to QEMU console
+# Run "sendkey ctrl-alt-f2" to switch tty
+#
 # How to configure via terminal:
 # - Create a image disk:
 #   https://qemu-project.gitlab.io/qemu/system/images.html

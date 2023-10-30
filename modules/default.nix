@@ -49,7 +49,7 @@ in
         automatic = true;
         persistent = true;
         dates = "weekly";
-        options = "--delete-old --delete-older-than 15d";
+        options = "--delete-old --delete-older-than 7d";
       };
       optimise = {
         automatic = true;
@@ -66,7 +66,7 @@ in
 
     # use `findmnt -l` to see the fileSystems
     services.btrfs.autoScrub.enable = true;
-    services.btrfs.autoScrub.interval = "weekly";
+    services.btrfs.autoScrub.interval = "monthly";
 
     # Use the systemd-boot EFI boot loader.
     # NOTE: some aditional modules are added were they were due

@@ -4,8 +4,11 @@ Name=Extract With 7z
 Comment=Extract with 7z in case of Archive Manager cannot identify corresponding encoding
 Icon-Name=archive-extract
 # loop the path list of selection (%F), create output without extension (-o"$(...)"), extract full paths (x "$(echo $i)")
-Exec=bash -c 'for i in %F; do 7z -y -o"$(echo $i | sed "s/\.[^.]*$//")" x "$(echo $i)"; done'
+Exec=<action_scripts/extract_with_7z.sh %F>
 Quote=double
+
+#Exec=bash -c 'for i in %F; do 7z -y -o"$(echo $i | sed "s/\.[^.]*$//")" x "$(echo $i)"; done'
+#Exec=bash -c 'for i in `echo %F | sed "s/\'/\\\'/g"); do 7z -y -o"$(echo $i | sed "s/\.[^.]*$//")" x "$(echo $i)"; done'
 Selection=any
 # use `xdg-mime query filetype $FILE` to find mimetypes
 Mimetypes=application/zip;application/x-tar;application/x-compressed-tar;application/x-bzip;application/x-7z-compressed;application/x-deb;application/x-ms-dos-executable;

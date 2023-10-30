@@ -36,7 +36,6 @@ in
     "extensions.pocket.enabled" = false;
     "geo.enabled" = false; # do not even let them even ask it
     "findbar.highlightAll" = true; # find highlight all by default
-    "network.dns.disableIPv6" = false; # enable IPv6
     "ui.prefersReducedMotion" = true; # disable chrome animations
     "privacy.webrtc.legacyGlobalIndicator" = false; # hide WebRTC microphone/camera access indicator
     "keyword.enabled" = true; # enable search from location bar
@@ -84,6 +83,7 @@ in
     "dom.battery.enabled" = false; # Disable website reading how much battery your mobile device or laptop has
     "toolkit.telemetry.cachedClientID" = ""; # Mozilla's telemetry
     "network.trr.mode" = 5; # To turn off Firefox's new "partnership" with Cloudflare
+    "clipboard.autocopy" = false; # disable mouse middle click clipboard
 
     # Tells website where you came from. Disabling may break some sites.
     # 0 = Disable referrer headers, 1 = Send only on clicked links, 2 = (default) Send for links and image.

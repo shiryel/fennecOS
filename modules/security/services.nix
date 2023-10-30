@@ -3,6 +3,10 @@
 {
   services.dbus.apparmor = "enabled";
 
+  # Trimming enables the SSD to more efficiently handle garbage collection,
+  # which would otherwise slow future write operations to the involved blocks.
+  services.fstrim.enable = true;
+
   # xdg's autostart is unecessary
   xdg.autostart.enable = lib.mkForce false;
 

@@ -346,7 +346,8 @@ help() {
 }
 
 screenshare() {
-  mpv -vo=xv udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio --vd-lavc-threads=1 &
+  # use --gpu-context=x11vk or x11egl
+  mpv --gpu-context=x11vk udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio --vd-lavc-threads=1 &
   wf-recorder --muxer=mpegts --codec=libx264 --file=udp://0.0.0.0:1111
 }
 
