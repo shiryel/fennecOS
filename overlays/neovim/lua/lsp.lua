@@ -148,12 +148,17 @@ end
 -- vim.lsp.set_log_level("debug")
 
 local lspconfig = require("lspconfig")
+local lsp_util = require 'lspconfig.util'
 
 -- ELIXIR
 lspconfig.elixirls.setup({
   on_attach = on_attach, 
   capabilities = capabilities(), 
-  cmd = {"elixir-ls"}
+  cmd = {"elixir-ls"},
+  root_dir = function(fname)
+    -- find mix.exs before git, as sometimes we have a project on a subdirectory
+    return lsp_util.root_pattern 'mix.exs'(fname) or lsp_util.find_git_ancestor(fname) or vim.loop.os_homedir()
+  end,
 })
 
 -- GDSCRIPT
@@ -181,6 +186,13 @@ lspconfig.efm.setup({
     }
   },
   cmd = {"efm-langserver"}
+})
+
+-- LUA
+lspconfig.lua_ls.setup({
+  on_attach = on_attach,
+  capabilities = capabilities(),
+  cmd = {"lua-language-server"}
 })
 
 -- ZIG
@@ -287,6 +299,15 @@ lspconfig.eslint.setup({
 lspconfig.svelte.setup({
   on_attach = on_attach, 
   capabilities = capabilities(),
+})
+
+-- TYPST
+lspconfig.typst_lsp.setup({
+  on_attach = on_attach,
+  capabilities = capabilities(),
+  root_dir = function(fname)
+    return lsp_util.root_pattern '.git'(fname) or lsp_util.path.dirname(fname)
+  end
 })
 
 -- DART

@@ -1,3 +1,11 @@
+## How to downgrade NixOS
+
+Go to https://hydra.nixos.org/jobset/nixos/trunk-combined
+Find the input change commit that fix your issue (usually the one with less failures)
+Copy it and paste on github, like: https://github.com/NixOS/nixpkgs/tree/bf744fe9
+Open any other file and copy the full hash from the URL
+Substitute the flake.lock hash with it
+
 ### Firefox/Librewolf 
 - https://blog.cloudflare.com/oblivious-dns/
 - about:config  

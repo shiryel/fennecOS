@@ -24,7 +24,7 @@
 
     # Language servers
     efm-langserver # General Purpose LSP
-    elixir_ls # Elixir
+    elixir-ls # Elixir
     #nixd # Nix
     nil # Nix
     #ccls # GCC
@@ -34,6 +34,8 @@
     python310Packages.python-lsp-server # pylsp
     nodePackages.svelte-language-server
     #vscode-langservers-extracted # JS
+    typst-lsp
+    lua-language-server
 
     # Formatters
     nixpkgs-fmt # Nix

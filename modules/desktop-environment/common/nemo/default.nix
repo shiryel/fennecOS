@@ -23,10 +23,13 @@
       recursive = true;
     };
 
-    # TODO: giving permission denied
-    xdg.dataFile."nemo/actions/action_scripts/" = {
-      source = ./action_scripts;
-      recursive = true;
+    xdg.dataFile."nemo/actions/action_scripts/extract_with_7z" = {
+      text = ''
+        #!/usr/bin/env bash
+        for i in "$@"; do
+          7z -y -o"$(echo $i | sed "s/\.[^.]*$//")" x "$(echo $i)"
+        done
+      '';
       executable = true;
     };
   };

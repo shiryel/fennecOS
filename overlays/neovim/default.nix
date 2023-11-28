@@ -82,6 +82,7 @@ in
             tree-sitter-dart
             tree-sitter-gdscript
             tree-sitter-godot-resource
+            tree-sitter-typst
             # web
             tree-sitter-svelte
             tree-sitter-javascript
@@ -102,6 +103,7 @@ in
             tree-sitter-graphql
           ]))
           kotlin-vim
+          typst-vim
           #nvim-treesitter-textobjects
           #
           # GIT

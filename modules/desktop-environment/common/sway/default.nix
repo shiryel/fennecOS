@@ -59,8 +59,9 @@ in
       xdg.configFile."sway/wallpaper".source = ../../imgs/wallpaper-hax.jpg;
       xdg.configFile."sway/config".text =
         let
-          out_left = "HDMI-A-1";
-          out_mid = "DP-1";
+          #out_left = "HDMI-A-1";
+          out_left = "DP-1";
+          out_mid = "HDMI-A-1";
           out_right = "HDMI-A-2";
           out_vr = "DP-2";
 
@@ -184,7 +185,7 @@ in
           # common - 1/top
           bindsym $mod+Shift+q kill
           bindsym $mod+Shift+d mode disabled
-          bindsym $mod+d exec ${pkgs.zsh}/bin/zsh -ic '${pkgs.wofi}/bin/wofi --show drun,run --lines 12 --prompt "" --allow-images --hide-scroll --no-actions --insensitive | xargs swaymsg exec --'
+          bindsym $mod+d exec ${pkgs.zsh}/bin/zsh -ic '${pkgs.wofi}/bin/wofi --show drun,run | xargs swaymsg exec --'
           bindsym $mod+Shift+r reload; output ${out_left} transform 270
           bindsym $mod+Return exec ${pkgs.foot}/bin/foot
 
@@ -363,7 +364,7 @@ in
           # calc: 60 fps = 1/60 * 1000 = 16.6ms
           exec swaymsg 'for_window [title=.*] max_render_time 17'
           exec swaymsg 'output * max_render_time 17'
-          exec swaymsg 'output * adaptive_sync on'
+          #exec swaymsg 'output * adaptive_sync on'
 
           # start systemd sway-session target
           #exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE NIXOS_OZONE_WL; systemctl --user start sway-session.target"

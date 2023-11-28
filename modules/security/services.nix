@@ -2,6 +2,7 @@
 
 {
   services.dbus.apparmor = "enabled";
+  #boot.tmp.cleanOnBoot = true;
 
   # Trimming enables the SSD to more efficiently handle garbage collection,
   # which would otherwise slow future write operations to the involved blocks.

@@ -345,21 +345,22 @@ help() {
   echo "audio_restart/0 - Restarts the pipewire on the user"
 }
 
-screenshare() {
-  # use --gpu-context=x11vk or x11egl
-  mpv --gpu-context=x11vk udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio --vd-lavc-threads=1 &
-  wf-recorder --muxer=mpegts --codec=libx264 --file=udp://0.0.0.0:1111
+screenshare-vulkan() {
+  mpv --gpu-context=x11vk udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio &
+  sleep 1 &
+  wf-recorder --muxer=mpegts --codec=libx265 --file=udp://0.0.0.0:1111
+}
+
+screenshare-gl() {
+  mpv --gpu-context=x11egl udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio &
+  sleep 1 &
+  wf-recorder --muxer=mpegts --codec=libx265 --file=udp://0.0.0.0:1111
 }
 
 screenshot() {
-  : ${1:=screenshot}
-  grim -t png -l 9 -g "$(slurp)" - >! "$1.png"
+  : ${1:="$HOME"/Downloads/screenshot}
+  grim -t png -l 9 -g "$(slurp)" - | tee "$1.png" | wl-copy
   echo "saved on $1.png"
-}
-
-luks_open() {
-  sudo cryptsetup open "$1" "$2"
-  sudo mount "/dev/mapper/$2" "$2"
 }
 
 mnt() {

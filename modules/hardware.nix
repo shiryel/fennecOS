@@ -64,11 +64,14 @@ in
           ### OpenCL ###
           rocm-opencl-icd
           rocm-opencl-runtime
+
+          # fixes `WLR_RENDERER=vulkan sway`
+          vulkan-validation-layers
         ];
-        extraPackages32 = with pkgs; [
-          #driversi686Linux.vaapiIntel
-          #driversi686Linux.libvdpau-va-gl
-        ];
+        #extraPackages32 = with pkgs; [
+        #  driversi686Linux.vaapiIntel
+        #  driversi686Linux.libvdpau-va-gl
+        #];
       };
     };
 

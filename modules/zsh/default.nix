@@ -47,7 +47,7 @@
 
       # /etc/zprofile
       loginShellInit = ''
-        cat <<EOF >> "~/.logs"
+        cat <<EOF >> "$HOME/.logs"
         ================================================
         `date +%m-%d-%Y@%H:%M`
         ================================================
@@ -60,8 +60,8 @@
         EOF
 
         if [ "$(tty)" = "/dev/tty1" ]; then
-          mv ".sway_errors.log" ".sway_errors.log_old"
-          exec sway 2> ".sway_errors.log"
+          mv ".sway_errors.log" "$HOME/.sway_errors.log_old"
+          WLR_RENDERER=vulkan exec sway 2> "$HOME/.sway_errors.log"
         fi
       '';
 

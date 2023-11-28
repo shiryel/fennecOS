@@ -45,13 +45,13 @@ in
   options.myNixOS.livebook.enable = mkEnableOption (mdDoc "enables livebook systemd service");
 
   config = mkIf cfg.enable {
-    systemd.tmpfiles.rules =
-      [
-        "L+    /opt/rocm    -    -    -     -    ${rocmFull}"
-        # fixes 'src/main/tools/process-wrapper-legacy.cc:80: "execvp(/usr/bin/ar, ...)": No such file or directory"
-        "L+    /usr/bin/ar -    -    -     -    ${pkgs.binutils}/bin/ar"
-        #"L+    /opt/rocm/include/rocblas.h -    -    -     -    ${pkgs.rocblas}/include/rocblas/rocblas.h"
-      ];
+    #systemd.tmpfiles.rules =
+    #  [
+    #    "L+    /opt/rocm    -    -    -     -    ${rocmFull}"
+    #    # fixes 'src/main/tools/process-wrapper-legacy.cc:80: "execvp(/usr/bin/ar, ...)": No such file or directory"
+    #    "L+    /usr/bin/ar -    -    -     -    ${pkgs.binutils}/bin/ar"
+    #    #"L+    /opt/rocm/include/rocblas.h -    -    -     -    ${pkgs.rocblas}/include/rocblas/rocblas.h"
+    #  ];
 
     systemd.user.services.livebook =
       let

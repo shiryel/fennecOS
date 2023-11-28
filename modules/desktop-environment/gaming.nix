@@ -52,7 +52,6 @@ with lib;
 
 let
   cfg = config.myNixOS.desktopEnvironment.gaming;
-  mainUser = "shiryel"; #config.myNixOS.mainUser;
 in
 {
   options.myNixOS.desktopEnvironment.gaming = {
@@ -128,7 +127,7 @@ in
         # Steam
         ({
           install = true;
-          args = ''-console -nochatui -nofriendsui -silent "$@"'';
+          args = ''-console -nochatui -nofriendsui "$@"''; # -silent
           packages = f: p: with p; {
             # NOTE: wakfu needs to be installed with proton 4.11-13
             steam = (steam.override {
@@ -147,6 +146,14 @@ in
           install = true;
           packages = f: p: with p; {
             BeatSaberModManager = BeatSaberModManager;
+            r2modman = (r2modman.overrideAttrs (old: {
+              src = p.fetchFromGitHub {
+                owner = "ebkr";
+                repo = "r2modmanPlus";
+                rev = "fdc15fa393beae5c827cbac79cce232bd07f71e7";
+                sha256 = "sha256-exD9gHT1+LzP1x7PJFgdXEIhXH67mkSvLlEZM0jwctI=";
+              };
+            }));
             #protontricks = protontricks;
           };
         } // steam_common)
@@ -192,38 +199,44 @@ in
     # - ps h -LA -o user | sort | uniq -c | sort -n
     # 
     security.pam.loginLimits = [
-      # Do not set -20, as the root needs it to be able to fix an unresponsive system[1]
+      # maximum nice priority allowed to raise to [-20,19] (negative values boost process priority)
       #
-      # (not verified) The current Linux scheduler gives a program at -1 twice as much CPU power as 
+      # The 'nice' value should do the same as 'rtprio' but for standard CFQ scheduling
+      # It sets the initial process spawned when PAM is setting these limits to that nice vaule, 
+      # a normal user can then go to that nice level or higher without needing root to set them [1]
+      #
+      # The current Linux scheduler gives a program at -1 twice as much CPU power as 
       # a 0, and a program at -2 twice as much as a -1, and so forth. This means that 0.9999046% 
       # of your CPU time will go to the program that's at -20, but some small fraction does go 
-      # to the program at 0. The program at 0 will feel like it's running on a 200kHz processor![2]
-      # [1] - https://wiki.archlinux.org/title/Limits.conf#nice
-      # [2] - https://unix.stackexchange.com/questions/334170/is-changing-the-priority-of-a-games-process-to-realtime-bad-for-the-cpu
-      { domain = mainUser; type = "hard"; item = "nice"; value = "-10"; }
-      { domain = mainUser; type = "soft"; item = "nice"; value = "-10"; }
-      { domain = mainUser; type = "soft"; item = "priority"; value = "0"; }
+      # to the program at 0. The program at 0 will feel like it's running on a 200kHz processor![2][3]
+      { domain = "root"; type = "-"; item = "nice"; value = "-20"; }
+      # Do not set -20, as the root needs it to be able to fix an unresponsive system[1]
+      # TEST: max value with nice --11 echo 1
+      { domain = "@users"; type = "-"; item = "nice"; value = "-5"; }
+      { domain = "@audio"; type = "-"; item = "nice"; value = "-19"; }
+
+      # the priority to run user process with [-20,19] (negative values boost process priority)
+      { domain = "@users"; type = "soft"; item = "priority"; value = "0"; }
+      { domain = "@audio"; type = "soft"; item = "priority"; value = "-10"; }
+
+      # Realtime configs
+      # Check max with: schedtool -r
+      # Check current with: ulimit -a
+      { domain = "@users"; type = "-"; item = "rtprio"; value = "10"; }
+      { domain = "@audio"; type = "-"; item = "rtprio"; value = "99"; }
 
       # Number of file descriptors any process owned by the specified domain 
       # can have open at any one time.
       #
       # Certain games needs this value as hight as 8192, but setting this value 
-      # too high or to unlimited may break some tools like fakeroot [1]
-      # [1] - https://wiki.archlinux.org/title/Limits.conf#nofile
+      # too high or to unlimited may break some tools like fakeroot [4]
+      { domain = "*"; type = "hard"; item = "nofile"; value = "65536"; }
       { domain = "*"; type = "soft"; item = "nofile"; value = "8192"; } # default 1024
-      #{ domain = "*"; type = "hard"; item = "nofile"; value = "524288"; }
+      { domain = "@audio"; type = "-"; item = "nofile"; value = "65536"; }
 
-      # Realtime configs
-      # Check with: 
-      # - schedtool -r
-
-      #N: SCHED_NORMAL  : prio_min 0, prio_max 0
-      #F: SCHED_FIFO    : prio_min 1, prio_max 99
-      #R: SCHED_RR      : prio_min 1, prio_max 99
-      #B: SCHED_BATCH   : prio_min 0, prio_max 0
-      #I: SCHED_ISO     : policy not implemented
-      #D: SCHED_IDLEPRIO: prio_min 0, prio_max 0
-      { domain = "*"; type = "soft"; item = "rtprio"; value = "50"; }
+      # Memory locked memory is never swappable and remains resident. This value is strictly 
+      # controlled because it can be abused by people to starve a system of memory and cause swapping [1]
+      { domain = "@audio"; type = "-"; item = "memlock"; value = "524288"; } # default 8192
 
       # NOTE FOR GAMING:
       # SCHED_ISO was designed to give users a SCHED_RR-similar class. 
@@ -240,6 +253,10 @@ in
       # schedtool -a 0,1 -n -10 -e
       # schedtool -a 0xFF -n -10 -e (each F is 4 CPUs)
     ];
+    # [1] - https://serverfault.com/questions/487602/linux-etc-security-limits-conf-explanation
+    # [2] - https://wiki.archlinux.org/title/Limits.conf#nice
+    # [3] - https://unix.stackexchange.com/questions/334170/is-changing-the-priority-of-a-games-process-to-realtime-bad-for-the-cpu
+    # [4] - https://wiki.archlinux.org/title/Limits.conf#nofile
 
     #programs.gamemode = {
     #  enable = true;

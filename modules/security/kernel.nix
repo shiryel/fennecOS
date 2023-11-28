@@ -97,6 +97,8 @@
   # - https://security.stackexchange.com/questions/187820/do-a-tpms-benefits-outweigh-the-risks
   #   Another criticism is that it may be used to prove to remote websites that you are running the software they want you to run, or that you are using a device which is not fully under your control. The TPM can prove to the remote server that your system's firmware has not been tampered with, and if your system's firmware is designed to restrict your rights, then the TPM is proving that your rights are sufficiently curtailed and that you are allowed to watch that latest DRM-ridden video you wanted to see. Thankfully, TPMs are not currently being used to do this, but the technology is there.
   #   TPMs make me nervous because a hardware failure could render me unable to access my own keys and data. That seems more likely than a black hat hacker pulling off a root kit on my OS." - https://youtu.be/RW2zHvVO09g
+  #
+  # More discussions at: https://news.ycombinator.com/item?id=38149441
   security.tpm2 = {
     enable = false;
     # - userspace resource manager daemon
