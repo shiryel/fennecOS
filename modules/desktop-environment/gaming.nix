@@ -76,7 +76,7 @@ in
         steam_common = {
           dev = true; # required for vulkan
           net = true;
-          tmp = true;
+          #tmp = true;
           xdg = true; # if prefs.steam.vr_integration then true else "ro";
           autoBindHome = false;
           rwBinds =
@@ -130,13 +130,17 @@ in
           args = ''-console -nochatui -nofriendsui "$@"''; # -silent
           packages = f: p: with p; {
             # NOTE: wakfu needs to be installed with proton 4.11-13
-            steam = (steam.override {
+            steam = steam.override ({ extraLibraries ? pkgs': [ ], ... }: {
               #runtimeOnly = true;
-              extraPkgs = pkgs: [ ];
-              extraLibraries = pkgs:
-                [ pkgs.elfutils ] ++
+              #extraPkgs = pkgs: with pkgs; [ ];
+              extraLibraries = pkgs':
+                (extraLibraries pkgs') ++
+                  [
+                    pkgs'.elfutils
+                    pkgs'.gperftools
+                  ] ++
                   # Fixes: dxvk::DxvkError
-                  (with config.hardware.opengl; if pkgs.hostPlatform.is64bit
+                  (with config.hardware.opengl; if pkgs'.hostPlatform.is64bit
                   then [ package ] ++ extraPackages
                   else [ package32 ] ++ extraPackages32);
             });
@@ -145,6 +149,7 @@ in
         ({
           install = true;
           packages = f: p: with p; {
+            gamescope = gamescope;
             BeatSaberModManager = BeatSaberModManager;
             r2modman = (r2modman.overrideAttrs (old: {
               src = p.fetchFromGitHub {

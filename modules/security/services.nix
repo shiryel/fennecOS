@@ -48,6 +48,7 @@
   # GNUPG AGENT #
   ###############
 
+  # Generate GPG Keys With Curve Ed25519: https://www.digitalneanderthal.com/post/gpg/
   programs.gnupg.agent = {
     enable = true;
     # cache SSH keys added by the ssh-add
