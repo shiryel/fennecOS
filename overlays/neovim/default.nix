@@ -109,14 +109,16 @@ in
           # GIT
           #
           gitsigns-nvim
+          diffview-nvim
           #
           # NAVIGATION
           #
           nvim-tree-lua
           nvim-web-devicons
-          plenary-nvim
-          telescope-nvim
-          telescope-fzf-native-nvim
+          fzf-lua
+          #plenary-nvim
+          #telescope-nvim
+          #telescope-fzf-native-nvim
           #nvim-focus
           #
           # EXTRA

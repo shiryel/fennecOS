@@ -1,24 +1,24 @@
-require('telescope').setup{
-  defaults = {
-    mappings = {
-      i = {
-        ["<C-up>"] = "preview_scrolling_up",
-        ["<C-down>"] = "preview_scrolling_down",
-        ["<C-left>"] = "preview_scrolling_left",
-        ["<C-right>"] = "preview_scrolling_right",
-        -- map actions.which_key to <C-h> (default: <C-/>)
-        -- actions.which_key shows the mappings for your picker,
-        -- e.g. git_{create, delete, ...}_branch for the git_branches picker
-        ["<C-h>"] = "which_key"
-      }
-    }
-  }
-}
+--require('telescope').setup{
+--  defaults = {
+--    mappings = {
+--      i = {
+--        ["<C-up>"] = "preview_scrolling_up",
+--        ["<C-down>"] = "preview_scrolling_down",
+--        ["<C-left>"] = "preview_scrolling_left",
+--        ["<C-right>"] = "preview_scrolling_right",
+--        -- map actions.which_key to <C-h> (default: <C-/>)
+--        -- actions.which_key shows the mappings for your picker,
+--        -- e.g. git_{create, delete, ...}_branch for the git_branches picker
+--        ["<C-h>"] = "which_key"
+--      }
+--    }
+--  }
+--}
 
 -- FZF does not work with live_grep
 -- :Telescope fzf is a bug
 -- Needs to be called right after telesctope to get fzf loaded
-require('telescope').load_extension('fzf')
+--require('telescope').load_extension('fzf')
 
 -- Icons for CMP
 local kind_icons = {
@@ -112,7 +112,8 @@ require("nvim-treesitter.configs").setup({
     additional_vim_regex_highlighting = { "kotlin" },
     -- some files are too big for treesitter to work...
     disable = function(lang, bufnr)
-      return (vim.api.nvim_buf_line_count(bufnr) > 20000) or false
+      -- ignore if > 1mb (size in bytes)
+      return (vim.fn.getfsize(bufnr) > 1000000) or false
     end
   },
   textobjects = {
@@ -181,7 +182,7 @@ require("nvim-tree").setup({
     add_trailing = true
   },
   filters = {
-    dotfiles = true
+    dotfiles = false
   },
   actions = {
     open_file = {
@@ -229,7 +230,7 @@ require("which-key").setup({
   triggers_blacklist = {i = {"j", "k"}, v = {"j", "k"}},
   triggers_nowait = {
     -- leader
-    "<space>",
+    "<leader>",
     -- marks
     "`",
     "'",

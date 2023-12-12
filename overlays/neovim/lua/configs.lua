@@ -6,7 +6,6 @@ local g = vim.g
 local o = vim.opt
 local c = vim.cmd
 
-c("syntax enable")
 c("highlight Comment cterm=italic")
 c("hi link xmlEndTag xmlTag")
 c("hi htmlArg gui=italic")
@@ -144,16 +143,9 @@ nnoremap("<c-right>", "<c-w><c-l>")
 nnoremap("<leader>be", ":bp<cr>", "previous buffer")
 nnoremap("<leader>bo", ":bn<cr>", "next buffer")
 
--- Remap splits
-nnoremap("<leader>vs", ":vs<cr>", "split right")
-nnoremap("<leader>vv", ":sp<cr>", "split down")
-
 -- Clipboard
 noremap("<leader>y", "\"+y", "system copy")
 noremap("<leader>p", "\"+p", "system paste")
-
--- Save
-nnoremap("<leader>w", ":w<cr>", "save")
 
 -- Unselect
 nnoremap("<leader>/", ":noh<cr>", "unselect")
@@ -168,33 +160,37 @@ nnoremap("<leader>T", ":sp <Bar> :terminal<cr> <bar> i", "open terminal")
 nnoremap("<leader>e", ":NvimTreeFindFile<cr>", "open file tree")
 nnoremap("<leader>E", ":NvimTreeToggle<cr>", "toggle file tree")
 
--- Telescope --
-local tb = require('telescope.builtin')
-nnoremap("<Leader>sb", tb.buffers, "buffers")
-nnoremap("<Leader>sa", tb.live_grep, "everywhere")
-nnoremap("<Leader>ss", ":Telescope grep_string search=<cr>", "fzf everywhere")
-nnoremap("<Leader>sS", tb.grep_string, "fzf this string")
-nnoremap("<Leader>sh", tb.search_history, "telescope history")
-nnoremap("<Leader>sH", tb.help_tags, "help tags")
-nnoremap("<Leader>st", tb.oldfiles, "old files")
-nnoremap("<Leader>sT", tb.tags, "tags")
-nnoremap("<Leader>sf", tb.find_files, "files")
-nnoremap("<Leader>so", tb.jumplist, "jumps")
-nnoremap("<Leader>sr", tb.registers, "registers")
-nnoremap("<Leader>sc", tb.commands, "commands")
-nnoremap("<Leader>sm", tb.keymaps, "keymaps")
-nnoremap("<Leader>s:", tb.command_history, "commands history")
-nnoremap("<Leader>s/", tb.search_history, "search history")
-nnoremap("<Leader>s'", tb.marks, "marks")
+-- Fzf-lua --
+local fzf = require('fzf-lua')
+nnoremap("<Leader>sb", fzf.buffers, "open buffers")
+nnoremap("<Leader>sf", fzf.files, "find or fd on a path")
+nnoremap("<Leader>sF", fzf.oldfiles, "opened files history")
+nnoremap("<Leader>st", fzf.tabs, "open tabs")
+nnoremap("<Leader>sT", fzf.tags, "search project tags")
+nnoremap("<Leader>sa", fzf.grep_project, "search all project lines")
+nnoremap("<Leader>ss", fzf.live_grep, "live grep current project")
+nnoremap("<Leader>sS", fzf.live_grep_resume, "live grep continue last search")
+nnoremap("<Leader>sh", fzf.search_history, "search history")
+nnoremap("<Leader>sq", fzf.quickfix, "quickfix list")
+nnoremap("<Leader>sQ", fzf.quickfix_stack, "quickfix stack")
+nnoremap("<Leader>sl", fzf.loclist, "location list")
+nnoremap("<Leader>sL", fzf.loclist_stack, "location stack")
+nnoremap("<Leader>so", fzf.jumps, "jumps")
+nnoremap("<Leader>sr", fzf.registers, "registers")
+nnoremap("<Leader>sk", fzf.keymaps, "keymaps")
+nnoremap("<Leader>sc", fzf.changes, "changes")
+nnoremap("<Leader>s:", fzf.command_history, "commands history")
+nnoremap("<Leader>s/", fzf.search_history, "search history")
+nnoremap("<Leader>s'", fzf.marks, "marks")
 -- git
 -- commits: checkout <cr> | reset mixed <C-r>m | reset soft <C-r>s | reset hard <C-r>h
-nnoremap("<Leader>gc", tb.git_commits, "commits mixed=<C-r>m soft=<C-r>s hard=<C-r>h")
+nnoremap("<Leader>gc", fzf.git_commits, "git commit log (project)")
 -- buffer commits: checkout <cr>
-nnoremap("<Leader>gb", tb.git_bcommits, "buffer commits")
+nnoremap("<Leader>gb", fzf.git_bcommits, "git commit log (buffer)")
 -- branches: checkout <cr> | track <C-t> | rebase <C-r> | create <C-a> | switch <C-s> | delete <C-d> | merge <C-y>
-nnoremap("<Leader>gt", tb.git_branches, "branches track=C-t rebase=C-r create=C-a switch=C-s delete=C-d merge=C-y")
-nnoremap("<Leader>gs", tb.git_status, "status")
-nnoremap("<Leader>gS", tb.git_stash, "stash")
+nnoremap("<Leader>gt", fzf.git_branches, "git branches")
+nnoremap("<Leader>gs", fzf.git_status, "git status")
+nnoremap("<Leader>gS", fzf.git_stash, "git stash")
 
 -- VCoolor --
 nnoremap("<leader>c", ":CccPick<CR>", "pick color")

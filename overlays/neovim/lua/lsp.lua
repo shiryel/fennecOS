@@ -1,9 +1,6 @@
 -- https://learn.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.languageserver.protocol.servercapabilities
 local function on_attach(client, bufnr)
-  -- NOTE: telescope is replacing: d.open_float, b.definition, 
-  -- b.implementation, b.references and b.type_definition
-  local tb = require('telescope.builtin')
-
+  local fzf = require('fzf-lua')
   local cap = client.server_capabilities
   -- inspect(cap)
 
@@ -21,7 +18,8 @@ local function on_attach(client, bufnr)
   -- :help vim.diagnostic.*
   local d = vim.diagnostic
 
-  noremap("<leader>qq", tb.diagnostics, "open diagnostics float window")
+  --noremap("<leader>qq", tb.diagnostics, "open diagnostics float window")
+  noremap("<leader>qq", fzf.diagnostics_document, "open diagnostics float window")
   noremap("<leader>ql", d.setloclist, "open diagnostics buffer")
   noremap("<leader>qh", d.show, "show diagnostics")
   noremap("<leader>qH", d.hide, "hide diagnostics")
@@ -42,30 +40,42 @@ local function on_attach(client, bufnr)
     noremap("<leader>F", b.range_formatting, "format range")
   end
 
-  -- GO TO --
+  -- LOCATIONS --
 
+  -- see: https://github.com/ibhagwan/fzf-lua/issues/669
+  noremap("<leader>a", fzf.lsp_finder, "All LSP locations, combined view")
+
+  -- Lists all the references to the symbol under the cursor in the quickfix window
+  --if cap.referenceProvider then
+  --  noremap("<leader>r", tb.lsp_references, "list references to symbol")
+  --end
+
+  -- Lists all the implementations for the symbol under the cursor in the
+  -- quickfix window
+  --if cap.implementationProvider then
+  --  noremap("<leader>i", tb.lsp_implementations, "list symbol's implementations")
+  --end
+
+  --if cap.typeDefinitionProvider then
+  --  noremap("<leader>t", fzf.lsp_type_definitions, "go to type definition")
+  --end
+
+  -- GOTO --
+  
   -- Jumps to the definition of the symbol under the cursor
   -- Jumps to the declaration of the symbol under the cursor (less used by LSPs)
   if cap.definitionProvider then
-    noremap("gd", tb.lsp_definitions, "go to definition")
+    noremap("gd", b.definition, "go to definition")
     if cap.declarationProvider then
       noremap("gD", b.declaration, "go to declaration")
     else
-      noremap("gD", tb.lsp_definitions, "go to definition")
+      noremap("gD", b.definition, "go to definition")
     end
   else
     if cap.declarationProvider then
       noremap("gd", b.declaration, "go to declaration")
       noremap("gD", b.declaration, "go to declaration")
     end
-  end
-  -- Jumps to the definition of the type of the symbol under the cursor
-  if cap.typeDefinitionProvider then
-    noremap("<leader>t", tb.lsp_type_definitions, "go to type definition")
-  end
-  -- Lists all the references to the symbol under the cursor in the quickfix window
-  if cap.referenceProvider then
-    noremap("<leader>r", tb.lsp_references, "list references to symbol")
   end
 
   -- HELPERS --
@@ -75,15 +85,11 @@ local function on_attach(client, bufnr)
   if cap.hoverProvider then
     noremap("<leader>h", b.hover, "show symbol info")
   end
+
   -- Displays signature information about the symbol under the cursor in a
   -- floating window
   if cap.signatureHelpProvider then
     noremap("<leader>H", b.signature_help, "show symbol signature")
-  end
-  -- Lists all the implementations for the symbol under the cursor in the
-  -- quickfix window
-  if cap.implementationProvider then
-    noremap("<leader>i", tb.lsp_implementations, "list symbol's implementations")
   end
 
   -- WORKSPACES --
