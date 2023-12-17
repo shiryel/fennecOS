@@ -40,6 +40,7 @@ in
           # LSP
           #
           nvim-lspconfig
+          aerial-nvim
           #flutter-tools-nvim # sets up dartls + flutter utils
           #
           # COMPLETION

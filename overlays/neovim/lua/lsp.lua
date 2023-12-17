@@ -43,7 +43,7 @@ local function on_attach(client, bufnr)
   -- LOCATIONS --
 
   -- see: https://github.com/ibhagwan/fzf-lua/issues/669
-  noremap("<leader>a", fzf.lsp_finder, "All LSP locations, combined view")
+  noremap("ga", fzf.lsp_finder, "All LSP locations, combined view")
 
   -- Lists all the references to the symbol under the cursor in the quickfix window
   --if cap.referenceProvider then

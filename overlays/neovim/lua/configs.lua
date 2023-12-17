@@ -66,11 +66,7 @@ o.statusline = "%f%m%r%h%w %=%< [%Y] [0x%02.2B]%4v,%4l %3p%% of %L"
 o.ruler = false  -- hide the column and line of the pointer
 o.laststatus = 2 -- always shows the status line on other windows
 
--- Folding
-o.foldenable = true       -- use zi to togle folding
-o.foldlevelstart = 0      -- some folds closed when start editing
-o.foldnestmax = 10        -- limit the folds in the indent and syntax
-
+-- Backup / History
 o.backup = false          -- no backup file when overwriting
 o.writebackup = false     -- no make backup before overwriting
 o.swapfile = true         -- enable swapfile (dont use it with confidential information, that even root must not be able to acess!)
@@ -79,6 +75,8 @@ o.hidden = true           -- buffer continue to exists when the file is abandone
 o.history = 100           -- history of the : commands
 do end
 (o.path):append({ "**" }) -- list of directories which will be searched when using the |gf|, [f, ]f, ^Wf, |:find|, |:sfind|, |:tabfind| and other commands
+
+-- Split / Diff
 o.splitbelow = true       -- default split below
 o.diffopt = "vertical"    -- default diff split in the vertical
 
@@ -123,6 +121,18 @@ local function vnoremap(bind, command, desc)
   return vim.keymap.set("v", bind, command, { noremap = true, silent = true, desc = desc })
 end
 
+-- Folding
+-- (we use aerial to navigate and fold to handle HTML)
+o.foldmethod = "expr"
+o.foldexpr = "nvim_treesitter#foldexpr()"
+o.foldenable = false      -- use zi to togle folding
+o.foldlevelstart = 1      -- some folds closed when start editing (1)
+o.foldnestmax = 20        -- limit the folds in the indent and syntax
+o.foldminlines = 1        -- limit the folds in the indent and syntax
+
+nnoremap("<leader>z", "za", "Toogle folder under cursor")
+nnoremap("<leader>Z", "zA", "Toogle all folders under cursor")
+
 -- Spell
 -- :set spell – Turn on spell checking
 -- :set nospell – Turn off spell checking
@@ -155,6 +165,9 @@ nnoremap("<leader><tab>", ":retab<cr>", "tabs to spaces")
 
 -- Open terminal
 nnoremap("<leader>T", ":sp <Bar> :terminal<cr> <bar> i", "open terminal")
+
+-- Aerial --
+nnoremap("<leader>a", "<cmd>AerialToggle!<cr>", "toggle aerial")
 
 -- Nvim Tree --
 nnoremap("<leader>e", ":NvimTreeFindFile<cr>", "open file tree")
