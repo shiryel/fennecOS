@@ -61,38 +61,40 @@
         ProcMonitorMethod = "ebpf";
       };
       # /var/lib/opensnitch/rules/*
-      rules = let 
-        bypassBwrap = pkg: pkg.passthru.noBwrap;
-      in with pkgs; {
-        loopback_ipv4 = lib.snitchAllowIp "127.0.0.1";
-        loopback_ipv6 = lib.snitchAllowIp "::1";
-        nix = lib.snitchAllowPath "${nixFlakes}/bin/nix";
-        network-manager = lib.snitchAllowPath "${networkmanager}/bin/NetworkManager";
-        systemd-timesyncd = lib.snitchAllowPath "${systemd}/lib/systemd/systemd-timesyncd";
-        firefox = lib.snitchAllowPath "${bypassBwrap firefox}/lib/firefox/firefox";
-        dnscrypt-proxy = lib.snitchAllowPath "${dnscrypt-proxy2}/bin/dnscrypt-proxy";
-        telegram = lib.snitchAllowPath "${bypassBwrap tdesktop}/bin/.telegram-desktop-wrapped";
-        discord = lib.snitchAllowPath "${bypassBwrap discord}/opt/Discord/.Discord-wrapped";
-        thunderbird = lib.snitchAllowPath "${bypassBwrap thunderbird}/lib/thunderbird/thunderbird";
-        #chromium = lib.snitchAllowPath "${bypassBwrap chromium}/libexec/chromium/chromium";
-        #freshclam = lib.snitchAllowPath "${clamav}/bin/freshclam";
-        # Steam/steamapps/common/Proton 7.0/dist/bin/wineserver
-        # Steam/steamapps/common/Proton - Experimental/files/bin/wine64-preloader
-        # SteamLibrary/steamapps/common/Proton 8.0/dist/bin/wine64-preloader
-        proton = lib.snitchRule { action = "allow"; name = "proton"; type = "regexp"; data = "^.*\/steamapps\/common\/Proton [^\/]*\/[^\/]*\/bin\/wine[^\/]*$"; };
-        # /Steam/ubuntu12_32/steam
-        # /Steam/ubuntu12_64/steamwebhelper
-        steam = lib.snitchRule { action = "allow"; name = "steam"; type = "regexp"; data = ".*\/Steam\/ubuntu[^\/]*\/steam[^\/]*$"; };
-        # Does not trully impact in anything, and after disabling dnscrypt [1]
-        # it does not look that it is bypassing it, but just to be safe...
-        # [1] - sudo pkill -STOP dnscrypt-proxy
-        #     - sudo pkill -CONT dnscrypt-proxy
-        nscd = lib.snitchDenyPath "${glibc}/bin/nscd";
-        nsncd = lib.snitchAllowPath "${nsncd}/bin/nsncd";
-        # file picker uses gvfs to send broadcast requests (192.168.1.255)
-        gvfs = lib.snitchRule { action = "deny"; name = "gvfs"; type = "regexp"; data = "\/nix\/store\/[^\/]*\/libexec\/.gvfsd[^\/]*"; };
-        zettlr-beta = lib.snitchRule { action = "deny"; name = "zettlr"; type = "regexp"; data = ".*-extracted/Zettlr$"; };
-      };
+      rules =
+        let
+          bypassBwrap = pkg: pkg.passthru.noBwrap;
+        in
+        with pkgs; {
+          loopback_ipv4 = lib.snitchAllowIp "127.0.0.1";
+          loopback_ipv6 = lib.snitchAllowIp "::1";
+          nix = lib.snitchAllowPath "${nixFlakes}/bin/nix";
+          network-manager = lib.snitchAllowPath "${networkmanager}/bin/NetworkManager";
+          systemd-timesyncd = lib.snitchAllowPath "${systemd}/lib/systemd/systemd-timesyncd";
+          firefox = lib.snitchAllowPath "${bypassBwrap firefox}/lib/firefox/firefox";
+          dnscrypt-proxy = lib.snitchAllowPath "${dnscrypt-proxy2}/bin/dnscrypt-proxy";
+          telegram = lib.snitchAllowPath "${bypassBwrap tdesktop}/bin/.telegram-desktop-wrapped";
+          discord = lib.snitchAllowPath "${bypassBwrap discord}/opt/Discord/.Discord-wrapped";
+          thunderbird = lib.snitchAllowPath "${bypassBwrap thunderbird}/lib/thunderbird/thunderbird";
+          #chromium = lib.snitchAllowPath "${bypassBwrap chromium}/libexec/chromium/chromium";
+          #freshclam = lib.snitchAllowPath "${clamav}/bin/freshclam";
+          # Steam/steamapps/common/Proton 7.0/dist/bin/wineserver
+          # Steam/steamapps/common/Proton - Experimental/files/bin/wine64-preloader
+          # SteamLibrary/steamapps/common/Proton 8.0/dist/bin/wine64-preloader
+          proton = lib.snitchRule { action = "allow"; name = "proton"; type = "regexp"; data = "^.*\/steamapps\/common\/Proton [^\/]*\/[^\/]*\/bin\/wine[^\/]*$"; };
+          # /Steam/ubuntu12_32/steam
+          # /Steam/ubuntu12_64/steamwebhelper
+          steam = lib.snitchRule { action = "allow"; name = "steam"; type = "regexp"; data = ".*\/Steam\/ubuntu[^\/]*\/steam[^\/]*$"; };
+          # Does not trully impact in anything, and after disabling dnscrypt [1]
+          # it does not look that it is bypassing it, but just to be safe...
+          # [1] - sudo pkill -STOP dnscrypt-proxy
+          #     - sudo pkill -CONT dnscrypt-proxy
+          nscd = lib.snitchDenyPath "${glibc}/bin/nscd";
+          nsncd = lib.snitchAllowPath "${nsncd}/bin/nsncd";
+          # file picker uses gvfs to send broadcast requests (192.168.1.255)
+          gvfs = lib.snitchRule { action = "deny"; name = "gvfs"; type = "regexp"; data = "\/nix\/store\/[^\/]*\/libexec\/.gvfsd[^\/]*"; };
+          zettlr-beta = lib.snitchRule { action = "deny"; name = "zettlr"; type = "regexp"; data = ".*-extracted/Zettlr$"; };
+        };
     };
   };
 

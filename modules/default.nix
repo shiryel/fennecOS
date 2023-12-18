@@ -14,7 +14,6 @@ in
     ./hardware.nix
     ./home-manager.nix
     ./neovim.nix
-    ./services/livebook.nix
   ];
 
   options.myNixOS = {

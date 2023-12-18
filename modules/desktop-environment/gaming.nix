@@ -151,14 +151,14 @@ in
           packages = f: p: with p; {
             gamescope = gamescope;
             BeatSaberModManager = BeatSaberModManager;
-            r2modman = (r2modman.overrideAttrs (old: {
-              src = p.fetchFromGitHub {
-                owner = "ebkr";
-                repo = "r2modmanPlus";
-                rev = "fdc15fa393beae5c827cbac79cce232bd07f71e7";
-                sha256 = "sha256-exD9gHT1+LzP1x7PJFgdXEIhXH67mkSvLlEZM0jwctI=";
-              };
-            }));
+            #r2modman = (r2modman.overrideAttrs (old: {
+            #  src = p.fetchFromGitHub {
+            #    owner = "ebkr";
+            #    repo = "r2modmanPlus";
+            #    rev = "fdc15fa393beae5c827cbac79cce232bd07f71e7";
+            #    sha256 = "sha256-exD9gHT1+LzP1x7PJFgdXEIhXH67mkSvLlEZM0jwctI=";
+            #  };
+            #}));
             #protontricks = protontricks;
           };
         } // steam_common)

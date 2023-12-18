@@ -36,7 +36,7 @@ in
   systemd.user.services = {
     dconf.serviceConfig = PrivateNetwork; # only_xdg // no_net // restricted;
     # https://en.wikipedia.org/wiki/GVfs#Technical_details
-    gvfs-daemon.serviceConfig = {}; # needs /usr for creating trash dir | needs sudo and sys/proc | Can't PrivateNetwork=yes
+    gvfs-daemon.serviceConfig = { }; # needs /usr for creating trash dir | needs sudo and sys/proc | Can't PrivateNetwork=yes
     gvfs-afc-volume-monitor.enable = false; # serviceConfig = ProtectSystem // PrivateDevices //  only_xdg // no_net // restricted;
     gvfs-goa-volume-monitor.enable = false; # serviceConfig = only_xdg // no_net // restricted;
     gvfs-gphoto2-volume-monitor.enable = false; #serviceConfig = only_xdg // no_net // restricted;
@@ -44,12 +44,12 @@ in
     gvfs-udisks2-volume-monitor.serviceConfig = PrivateNetwork // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
     gpg-agent.serviceConfig = PrivateNetwork;
     podman.serviceConfig = ProtectKernelTunables;
-# TODO
+    # TODO
     opensnitch-ui.serviceConfig = ProtectHomeAsTmp; # // PrivateNetwork; # needs dev
-    xdg-desktop-portal-gtk.serviceConfig = {}; # Can't PrivateNetwork=yes
-    xdg-desktop-portal-wlr.serviceConfig = {}; # Can't PrivateNetwork=yes
-    xdg-desktop-portal.serviceConfig = {}; # Can't PrivateNetwork=yes
-    xdg-document-portal.serviceConfig = {}; # Can't PrivateNetwork=yes
+    xdg-desktop-portal-gtk.serviceConfig = { }; # Can't PrivateNetwork=yes
+    xdg-desktop-portal-wlr.serviceConfig = { }; # Can't PrivateNetwork=yes
+    xdg-desktop-portal.serviceConfig = { }; # Can't PrivateNetwork=yes
+    xdg-document-portal.serviceConfig = { }; # Can't PrivateNetwork=yes
     # store permissions, like flatpak responses on ~/.local/share/flatpak/db/devices
     xdg-permission-store.serviceConfig = ProtectHomeAsTmp // BindXDG; # Can't PrivateNetwork=yes
     polkit-kde-authentication-agent-1 = {
@@ -89,7 +89,7 @@ in
     nix-gc.serviceConfig = PrivateNetwork;
     nix-optimise.serviceConfig = PrivateNetwork;
     nscd.serviceConfig = RestrictSUIDSGID; # already has System=strict Home=ready-only
-# TODO
+    # TODO
     #opensnitchd.serviceConfig = ProtectHomeAsTmp;
     podman.serviceConfig = ProtectHomeAsTmp;
     polkit.serviceConfig = ProtectHomeAsTmp // PrivateNetwork;
