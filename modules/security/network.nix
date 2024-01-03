@@ -31,6 +31,8 @@
 
 { config, lib, pkgs, ... }:
 
+assert builtins.hasAttr "snitchAllowPath" lib;
+
 {
   networking = {
     firewall = {

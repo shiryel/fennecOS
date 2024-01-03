@@ -13,7 +13,6 @@ in
     ./virtualisation
     ./hardware.nix
     ./home-manager.nix
-    ./neovim.nix
   ];
 
   options.myNixOS = {

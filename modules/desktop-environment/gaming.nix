@@ -151,14 +151,7 @@ in
           packages = f: p: with p; {
             gamescope = gamescope;
             BeatSaberModManager = BeatSaberModManager;
-            #r2modman = (r2modman.overrideAttrs (old: {
-            #  src = p.fetchFromGitHub {
-            #    owner = "ebkr";
-            #    repo = "r2modmanPlus";
-            #    rev = "fdc15fa393beae5c827cbac79cce232bd07f71e7";
-            #    sha256 = "sha256-exD9gHT1+LzP1x7PJFgdXEIhXH67mkSvLlEZM0jwctI=";
-            #  };
-            #}));
+            r2modman = r2modman; 
             #protontricks = protontricks;
           };
         } // steam_common)
@@ -233,11 +226,11 @@ in
       # Number of file descriptors any process owned by the specified domain 
       # can have open at any one time.
       #
-      # Certain games needs this value as hight as 8192, but setting this value 
-      # too high or to unlimited may break some tools like fakeroot [4]
-      { domain = "*"; type = "hard"; item = "nofile"; value = "65536"; }
+      # Certain games needs this value as hight as 8192, or in case of lutris with esync, >=524288 [4][5],
+      # but setting this value too high or to unlimited may break some tools like fakeroot [6]
+      { domain = "*"; type = "hard"; item = "nofile"; value = "1048576"; } # recommended by esync [5]
       { domain = "*"; type = "soft"; item = "nofile"; value = "8192"; } # default 1024
-      { domain = "@audio"; type = "-"; item = "nofile"; value = "65536"; }
+      { domain = "@audio"; type = "soft"; item = "nofile"; value = "65536"; }
 
       # Memory locked memory is never swappable and remains resident. This value is strictly 
       # controlled because it can be abused by people to starve a system of memory and cause swapping [1]
@@ -261,7 +254,9 @@ in
     # [1] - https://serverfault.com/questions/487602/linux-etc-security-limits-conf-explanation
     # [2] - https://wiki.archlinux.org/title/Limits.conf#nice
     # [3] - https://unix.stackexchange.com/questions/334170/is-changing-the-priority-of-a-games-process-to-realtime-bad-for-the-cpu
-    # [4] - https://wiki.archlinux.org/title/Limits.conf#nofile
+    # [4] - https://github.com/lutris/docs/blob/master/HowToEsync.md
+    # [5] - https://github.com/zfigura/wine/blob/esync/README.esync
+    # [6] - https://wiki.archlinux.org/title/Limits.conf#nofile
 
     #programs.gamemode = {
     #  enable = true;

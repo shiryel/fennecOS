@@ -60,7 +60,7 @@
     enableBrowserSocket = false;
     # NOTE: "gnome3" flavor only works with Xorg
     # To reload config: gpg-connect-agent reloadagent /bye
-    pinentryFlavor = "gtk2"; # use "tty" for console only
+    pinentryFlavor = "gnome3"; # use "tty" for console only
   };
 
   environment.systemPackages = [ pkgs.gnupg ];
