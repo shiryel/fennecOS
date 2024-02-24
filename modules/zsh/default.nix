@@ -61,7 +61,8 @@
 
         if [ "$(tty)" = "/dev/tty1" ]; then
           mv ".sway_errors.log" "$HOME/.sway_errors.log_old"
-          WLR_RENDERER=vulkan exec sway 2> "$HOME/.sway_errors.log"
+          exec sway 2> "$HOME/.sway_errors.log"
+          #WLR_RENDERER=vulkan exec sway 2> "$HOME/.sway_errors.log"
         fi
       '';
 

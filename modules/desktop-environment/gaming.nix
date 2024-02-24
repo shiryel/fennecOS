@@ -101,13 +101,15 @@ in
             "--unsetenv NIXOS_OZONE_WL"
             # Proton-GE
             "--setenv STEAM_EXTRA_COMPAT_TOOLS_PATHS ${
+            # fixes many games, including:
+            # - Age of Empires II online out of sync errors
             pkgs.stdenv.mkDerivation rec {
               pname = "proton-ge-custom";
-              version = "GE-Proton8-13";
+              version = "GE-Proton8-25";
 
               src = pkgs.fetchurl {
                 url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${version}/${version}.tar.gz";
-                sha256 = "sha256-XdIQYbWqBFidrcWaAxbtkWgKC2G5CFSPNamIhkm/nqo=";
+                sha256 = "sha256-s3FgsnqzbgBo9zqwmsDJNjI8+TTG827bFxzWQr184Yo=";
               };
 
               buildCommand = ''
@@ -151,7 +153,7 @@ in
           packages = f: p: with p; {
             gamescope = gamescope;
             BeatSaberModManager = BeatSaberModManager;
-            r2modman = r2modman; 
+            r2modman = r2modman;
             #protontricks = protontricks;
           };
         } // steam_common)

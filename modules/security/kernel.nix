@@ -23,7 +23,9 @@
 
 {
   # Kernel (default: LTS)
+  #boot.kernelPackages = pkgs.linuxPackages_latest-libre;
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxKernel.packages.linux_latest_libre;
   #boot.kernelPackages = pkgs.linuxPackages_hardened;
   #boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
   #boot.kernelPackages = pkgs.linuxPackages_zen;

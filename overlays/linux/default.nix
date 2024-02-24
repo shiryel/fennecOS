@@ -56,4 +56,22 @@ final: prev: {
   #    # ];
   #  };
   #});
+
+  linuxPackages_latest = prev.linuxPackages_latest.extend (kfinal: kprev: {
+    opensnitch-ebpf = kprev.opensnitch-ebpf.overrideAttrs
+      (old: {
+        env.NIX_CFLAGS_COMPILE = "-fcf-protection -fno-stack-protector";
+        env.KERNEL_DIR = "${kfinal.kernel.dev}/lib/modules/${kfinal.kernel.modDirVersion}/source";
+        env.KERNEL_HEADERS = "${kfinal.kernel.dev}/lib/modules/${kfinal.kernel.modDirVersion}/build";
+
+        buildPhase = ''
+          runHook preBuild
+
+          make
+          llvm-strip -g opensnitch{,-dns,-procs}.o
+
+          runHook postBuild
+        '';
+      });
+  });
 }

@@ -35,6 +35,7 @@ assert builtins.hasAttr "snitchAllowPath" lib;
 
 {
   networking = {
+    nftables.enable = true;
     firewall = {
       enable = true;
       #allowPing = false;
@@ -57,7 +58,7 @@ assert builtins.hasAttr "snitchAllowPath" lib;
     opensnitch = {
       enable = true;
       settings = {
-        Firewall = "iptables";
+        Firewall = "nftables";
         DefaultDuration = "15m";
         DefaultAction = "deny";
         ProcMonitorMethod = "ebpf";
@@ -70,6 +71,7 @@ assert builtins.hasAttr "snitchAllowPath" lib;
         with pkgs; {
           loopback_ipv4 = lib.snitchAllowIp "127.0.0.1";
           loopback_ipv6 = lib.snitchAllowIp "::1";
+          clamav-freshclam = lib.snitchAllowHost "database.clamav.net";
           nix = lib.snitchAllowPath "${nixFlakes}/bin/nix";
           network-manager = lib.snitchAllowPath "${networkmanager}/bin/NetworkManager";
           systemd-timesyncd = lib.snitchAllowPath "${systemd}/lib/systemd/systemd-timesyncd";
@@ -79,7 +81,6 @@ assert builtins.hasAttr "snitchAllowPath" lib;
           discord = lib.snitchAllowPath "${bypassBwrap discord}/opt/Discord/.Discord-wrapped";
           thunderbird = lib.snitchAllowPath "${bypassBwrap thunderbird}/lib/thunderbird/thunderbird";
           #chromium = lib.snitchAllowPath "${bypassBwrap chromium}/libexec/chromium/chromium";
-          #freshclam = lib.snitchAllowPath "${clamav}/bin/freshclam";
           # Steam/steamapps/common/Proton 7.0/dist/bin/wineserver
           # Steam/steamapps/common/Proton - Experimental/files/bin/wine64-preloader
           # SteamLibrary/steamapps/common/Proton 8.0/dist/bin/wine64-preloader

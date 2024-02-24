@@ -54,6 +54,11 @@ with lib;
     snitchRule { action = "allow"; name = "ip-${ip}"; operand = "dest.ip"; data = ip; precedence = true; }
   );
 
+  snitchAllowHost = (host:
+    assert isString host;
+    snitchRule { action = "allow"; name = "host-${host}"; operand = "dest.host"; data = host; }
+  );
+
   # eg: 
   # lib.snitchAllowNetwork "::1/128";
   # lib.snitchAllowNetwork "127.0.0.0/8";

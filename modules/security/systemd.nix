@@ -81,7 +81,8 @@ in
     btrfs-scrub-nix.serviceConfig = PrivateNetwork // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
     btrfs-scrub-var.serviceConfig = PrivateNetwork // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
     # miscelaneous
-    #clamav-daemon.serviceConfig = no_home // restricted;
+    clamav-daemon.serviceConfig = ProtectHomeAsTmp // ProtectSystem // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
+    clamav-freshclam.serviceConfig = ProtectHomeAsTmp // ProtectSystem // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
     dbus.serviceConfig = ProtectHomeAsRO; # needs network to work and +w to /sys to allow corectrl to work
     emergency.serviceConfig = PrivateNetwork;
     "getty@tty1".serviceConfig = PrivateNetwork;

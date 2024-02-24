@@ -27,7 +27,7 @@ in
       ''
       )
 
-      #xwaylandvideobridge
+      xwaylandvideobridge
       swaybg
       swaylock
       waybar
