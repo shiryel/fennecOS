@@ -1,0 +1,5 @@
+[output *]
+image=~/.cache/wallpaper
+filter=nearest
+scaling-mode=fill
+anchor=center

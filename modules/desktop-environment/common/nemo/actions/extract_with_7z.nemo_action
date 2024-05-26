@@ -1,0 +1,12 @@
+[Nemo Action]
+Active=true
+Name=Extract With 7z
+Comment=Extract with 7z in case of Archive Manager cannot identify corresponding encoding
+Icon-Name=archive-extract
+Exec=<action_scripts/extract_with_7z %F>
+# Needs to be left empty (default) as the file names spaces will be escaped
+Quote=
+Selection=any
+EscapeSpaces=true
+# use `xdg-mime query filetype $FILE` to find mimetypes
+Mimetypes=application/zip;application/x-tar;application/x-compressed-tar;application/x-bzip;application/x-7z-compressed;application/x-deb;application/x-ms-dos-executable;

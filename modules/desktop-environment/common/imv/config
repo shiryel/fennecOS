@@ -1,0 +1,3 @@
+[binds]
+# Using only sway background:
+# <Shift+W> = exec cp -f "$imv_current_file" ~/.cache/wallpaper && swaymsg output "*" background ~/.cache/wallpaper fill

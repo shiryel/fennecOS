@@ -1,0 +1,22 @@
+width=750
+#height=450
+lines=14
+filter_rate=100
+insensitive=true
+allow_images=true
+image_size=26
+allow_markup=true
+hide_scroll=true
+no_actions=true
+prompt=
+
+# RUN config
+run-always_parse_args=true
+run-cache_file=/dev/null
+run-exec_search=true
+
+# DRUN config
+
+# forces the usage of "xargs swaymsg exec --"
+# which is very important to make apps run correctly (e.g.: telegram)
+drun-print_comand=true

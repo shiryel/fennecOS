@@ -1,0 +1,589 @@
+#
+# Configs from prezto
+#
+
+###########
+# General #
+###########
+
+setopt COMBINING_CHARS      # Combine zero-length punctuation characters (accents) with the base character.
+setopt INTERACTIVE_COMMENTS # Enable comments in interactive shell.
+setopt RC_QUOTES            # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
+unsetopt MAIL_WARNING       # Don't print a warning message if a mail file has been accessed.
+
+########
+# Jobs #
+########
+
+setopt LONG_LIST_JOBS     # List jobs in the long format by default.
+setopt AUTO_RESUME        # Attempt to resume existing job before creating a new process.
+setopt NOTIFY             # Report status of background jobs immediately.
+setopt HUP                # Kill jobs on shell exit.
+setopt CHECK_JOBS         # Report on jobs when shell exit.
+unsetopt BG_NICE          # Don't run all background jobs at a lower priority.
+
+###########
+# History #
+###########
+
+setopt BANG_HIST                 # Treat the '!' character specially during expansion.
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt SHARE_HISTORY             # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
+setopt HIST_BEEP                 # Beep when accessing non-existent history.
+
+alias h="history 1 | grep"
+
+#############
+# Directory #
+#############
+
+setopt AUTO_CD              # Auto changes to a directory without typing cd.
+setopt AUTO_PUSHD           # Push the old directory onto the stack on cd.
+setopt PUSHD_IGNORE_DUPS    # Do not store duplicates in the stack.
+setopt PUSHD_SILENT         # Do not print the directory stack after pushd or popd.
+setopt PUSHD_TO_HOME        # Push to home directory when no argument is given.
+setopt CDABLE_VARS          # Change directory to a path stored in a variable.
+setopt MULTIOS              # Write to multiple descriptors.
+unsetopt EXTENDED_GLOB      # Don't use extended globbing syntax.
+                            # NOTE: It's needed for file modification glob modifiers with compinit.
+unsetopt CLOBBER            # Do not overwrite existing files with > and >>.
+                            # Use >! and >>! to bypass.
+
+# list directory stack
+alias d='dirs -v'
+# jump to a directory stack using numbers
+for index ({1..9}) alias "$index"="cd +${index}"; unset index
+
+###########
+# Utility #
+###########
+
+# Disable correction.
+alias ack='nocorrect ack'
+alias cd='nocorrect cd'
+alias cp='nocorrect cp'
+alias ebuild='nocorrect ebuild'
+alias gcc='nocorrect gcc'
+alias gist='nocorrect gist'
+alias grep='nocorrect grep'
+alias heroku='nocorrect heroku'
+alias ln='nocorrect ln'
+alias man='nocorrect man'
+alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
+alias mysql='nocorrect mysql'
+alias rm='nocorrect rm'
+
+# Disable globbing. (fix: "zsh: no matches found")
+alias bower='noglob bower'
+alias fc='noglob fc'
+alias find='noglob find'
+alias ftp='noglob ftp'
+alias history='noglob history'
+alias locate='noglob locate'
+alias rake='noglob rake'
+alias rsync='noglob rsync'
+alias scp='noglob scp'
+alias sftp='noglob sftp'
+alias nix='noglob nix'
+
+# Define general aliases.
+alias _='sudo'
+alias b='${(z)BROWSER}'
+
+alias diffu="diff --unified"
+alias e='${(z)VISUAL:-${(z)EDITOR}}'
+alias mkdir="${aliases[mkdir]:-mkdir} -p"
+alias p='${(z)PAGER}'
+alias po='popd'
+alias pu='pushd'
+alias sa='alias | grep -i'
+alias type='type -a'
+
+alias ls="${aliases[lsd]:-lsd} --group-dirs last --extensionsort --almost-all"
+
+alias grep="${aliases[grep]:-grep} --color=auto"
+
+# Resource Usage
+alias df='df -kh'
+alias du='du -kh'
+alias topc='top -o %CPU'
+alias topm='top -o %MEM'
+# Displays user owned processes status.
+function psu {
+  ps -U "${1:-$LOGNAME}" -o 'pid,%cpu,%mem,command' "${(@)argv[2,-1]}"
+}
+
+# Screen Recording
+alias record="wf-recorder --audio='alsa_output.pci-0000_28_00.3.analog-stereo.monitor'"
+
+# Containers
+alias start-postgres="podman run -d --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres"
+alias start-mongodb="podman run -d --name mongodb -p 27017:27017 mongo"
+
+# Modern Nix
+alias df="duf"
+
+# Admin
+alias ports="sudo lsof -i -n -P | grep LISTEN"
+alias ports_all="sudo lsof -i -n -P"
+alias temperatures='watch -n 1 "echo CPU && cat /sys/class/hwmon/hwmon*/temp*_input && echo GPU && cat /sys/class/drm/card0/device/hwmon/hwmon*/temp*_input"'
+# OR:
+# (t)cp (u)dp (p)processes (n)umeric (l)istening
+# > sudo netstat -tupnl
+# > sudo ss -tupnl
+
+##############
+# Completion #
+##############
+# From: https://github.com/sorin-ionescu/prezto/blob/master/modules/completion/init.zsh#L28
+
+setopt COMPLETE_IN_WORD     # Complete from both ends of a word.
+setopt ALWAYS_TO_END        # Move cursor to the end of a completed word.
+setopt PATH_DIRS            # Perform path search even on command names with slashes.
+setopt AUTO_MENU            # Show completion menu on a successive tab press.
+setopt AUTO_LIST            # Automatically list choices on ambiguous completion.
+setopt AUTO_PARAM_SLASH     # If completed parameter is a directory, add a trailing slash.
+setopt EXTENDED_GLOB        # Needed for file modification glob modifiers with compinit.
+unsetopt MENU_COMPLETE      # Do not autoselect the first completion entry.
+unsetopt FLOW_CONTROL       # Disable start/stop characters in shell editor.
+
+# Standard style used by default for 'list-colors'
+LS_COLORS=${LS_COLORS:-'di=34:ln=35:so=32:pi=33:ex=31:bd=36;01:cd=33;01:su=31;40;07:sg=36;40;07:tw=32;40;07:ow=33;40;07:'}
+
+# Load and initialize the completion system ignoring insecure directories with a
+# cache time of 20 hours, so it should almost always regenerate the first time a
+# shell is opened each day.
+autoload -Uz compinit
+_comp_path="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+# #q expands globs in conditional expressions
+if [[ $_comp_path(#qNmh-20) ]]; then
+  # -C (skip function check) implies -i (skip security check).
+  compinit -C -d "$_comp_path"
+else
+  mkdir -p "$_comp_path:h"
+  compinit -i -d "$_comp_path"
+  # Keep $_comp_path younger than cache time even if it isn't regenerated.
+  touch "$_comp_path"
+fi
+unset _comp_path
+
+# Styles
+
+# Defaults.
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+
+# Use caching to make completion for commands such as dpkg and apt usable.
+zstyle ':completion::complete:*' use-cache on
+zstyle ':completion::complete:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompcache"
+
+# Case-insensitive (all), partial-word, and then substring completion.
+zstyle ':completion:*' matcher-list 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+setopt CASE_GLOB
+
+# Group matches and describe.
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:matches' group 'yes'
+zstyle ':completion:*:options' description 'yes'
+zstyle ':completion:*:options' auto-description '%d'
+zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' verbose yes
+
+# Fuzzy match mistyped completions.
+zstyle ':completion:*' completer _complete _match _approximate
+zstyle ':completion:*:match:*' original only
+zstyle ':completion:*:approximate:*' max-errors 1 numeric
+
+# Increase the number of errors based on the length of the typed word. But make
+# sure to cap (at 7) the max-errors to avoid hanging.
+zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
+
+# Don't complete unavailable commands.
+zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+
+# Array completion element sorting.
+zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+
+# Directories
+zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
+zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
+zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+zstyle ':completion:*' squeeze-slashes true
+
+# History
+zstyle ':completion:*:history-words' stop yes
+zstyle ':completion:*:history-words' remove-all-dups yes
+zstyle ':completion:*:history-words' list false
+zstyle ':completion:*:history-words' menu yes
+
+# Environment Variables
+zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+
+# Populate hostname completion. But allow ignoring custom entries from static
+# */etc/hosts* which might be uninteresting.
+zstyle -a ':prezto:module:completion:*:hosts' etc-host-ignores '_etc_host_ignores'
+
+zstyle -e ':completion:*:hosts' hosts 'reply=(
+  ${=${=${=${${(f)"$(cat {/etc/ssh/ssh_,~/.ssh/}known_hosts(|2)(N) 2> /dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
+  ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2> /dev/null))"}%%(\#${_etc_host_ignores:+|${(j:|:)~_etc_host_ignores}})*}
+  ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2> /dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
+)'
+
+# Don't complete uninteresting users...
+zstyle ':completion:*:*:*:users' ignored-patterns \
+  adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
+  dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
+  hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
+  mailman mailnull mldonkey mysql nagios \
+  named netdump news nfsnobody nobody nscd ntp nut nx openvpn \
+  operator pcap postfix postgres privoxy pulse pvm quagga radvd \
+  rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
+
+# ... unless we really want to.
+zstyle '*' single-ignored show
+
+# Ignore multiple entries.
+zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
+zstyle ':completion:*:rm:*' file-patterns '*:all-files'
+
+# Kill
+zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*' insert-ids single
+
+# Man
+zstyle ':completion:*:manuals' separate-sections true
+zstyle ':completion:*:manuals.(^1*)' insert-sections true
+
+# Media Players
+zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
+zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
+
+# SSH/SCP/RSYNC
+zstyle ':completion:*:(ssh|scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
+zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
+zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+
+#########
+# STEAM #
+#########
+
+function steam_help() {
+  # in this case will be a hash, but could be "nixos-22.11"
+  version=nixos-version --revision
+
+  cat << EOF
+    --- EXTERNAL GAMES ---
+    If the game comes with a installer, install it and get the AppId on the steam console
+    Using the AppId you can find where the game is installed and change the steam "shortcut"
+    options to (the AppId is fixed by the "shortcut name"):
+    START IN: "/home/shiryel/.local/share/Steam/steamapps/compatdata/<AppId>"
+    TARGET: "pfx/drive_c/<APP_PATH>/<APP>.exe"
+
+    --- LAUNCH OPTIONS ---
+    Force to run a game with DX10 / DX11 (solves many problems):
+    PROTON_USE_WINED3D=1 %command%
+
+    Sometimes those may help:
+    SDL_VIDEODRIVER=windib
+
+    Tips for proton:
+    https://www.reddit.com/r/linux_gaming/comments/dar8wk/would_moving_to_wayland_affect_steamvulkan_games/
+
+    Debuging mode:
+    PROTON_LOG=1 WINEDEBUG="+timestamp,+pid,+tid,+seh,+debugstr,+module" %command%
+
+    Usefull launch options:
+    -con_enable 1 -high -noforcemspd -windowed -w 1920 -h 1080 -nocrashdialog -novid
+    (https://slothytech.com/best-steam-launch-options/)
+    (https://help.steampowered.com/en/faqs/view/7D01-D2DD-D75E-2955)
+
+    Force on a window:
+    - Arma 3 only?: --eon_force_display=2
+
+    Force wayland only:
+    SDL_VIDEODRIVER=wayland LD_PRELOAD="$(nix eval nixpkgs/${version}#SDL.outPath | tr -d '"')/lib/libSDL.so:$(nix eval nixpkgs/${version}#SDL2.outPath | tr -d '"')/lib/libSDL2.so:\$LD_PRELOAD" %command%
+
+    --- VR ---
+    find bwrap | grep vrcompositor-launcher
+
+    sudo setcap CAP_SYS_NICE+ep /home/shiryel/bwrap/steam/.local/share/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher
+EOF
+}
+
+#############
+# Functions #
+#############
+
+help() {
+  echo "screenshare - To share screen using pipewire xdg-desktop-portal and xdg-desktop-portal-wlr on chrome with the pipewire flag enabled chrome://flags"
+  echo "screenshot/0 - Takes a screenshot"
+  echo "screenshot/1 - Takes a screenshot with a filename"
+  echo "luks_open/2 - Opens the DEVICE with the NAME"
+  echo "mnt/2 - Mounts a btrfs with subvol=@ using the DEVICE and the MOUNT_POINT"
+  echo "audio_restart/0 - Restarts the pipewire on the user"
+}
+
+screenshare-vulkan() {
+  mpv --gpu-context=x11vk udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio &
+  sleep 1 &
+  wf-recorder --muxer=mpegts --codec=libx265 --file=udp://0.0.0.0:1111
+}
+
+screenshare-gl() {
+  mpv --gpu-context=x11egl udp://0.0.0.0:1111 --no-cache --untimed --no-demuxer-thread --video-sync=audio &
+  sleep 1 &
+  wf-recorder --muxer=mpegts --codec=libx265 --file=udp://0.0.0.0:1111
+}
+
+screenshot() {
+  : ${1:="$HOME"/Downloads/screenshot}
+  grim -t png -l 9 -g "$(slurp)" - | tee "$1.png" | wl-copy
+  echo "saved on $1.png"
+}
+
+mnt() {
+  sudo mount -o noatime,nodiratime,compress=zstd,space_cache,subvol=@ $1 $2
+}
+
+audio_restart() {
+  systemctl --user restart pipewire.socket
+}
+
+download_m3u8() {
+  if [[ $# -ne 2 ]]; then
+    echo "insert m3u8 url as first argument"
+    echo "name of the file is optional (default to output.mp4)"
+    return
+  fi
+  name="${2:-output}"
+  ffmpeg -i "$1" -c copy "${name}.mp4"
+}
+
+download_force() {
+  echo 'if the video is short, you may be able to download it direct from the browser by inspecting'
+  echo 'the network > searching for "video" > openning in a new tab'
+  echo 'if this is not possible, search for "videomanifest" > copy the url and'
+  echo 'use the following command with the right format:'
+  echo ''
+  echo "yt-dlp --allow-u -f mp4 '$1' -o '$2'"
+}
+
+vimx () { vi -s <(echo "$1"':wq') "$2" &> /dev/null; }
+
+backup_data() {
+  set -o pipefail
+
+  if [[ $# -ne 1 ]]; then
+    echo "needs the backup dir"
+    return
+  fi
+  ip="192.168.1.5"
+
+  # https://wiki.archlinux.org/title/rsync
+  # Transfer directory [r]ecursively in [a]rchive (to preserve attributes) ignoring already transferred files [u]nless newer 
+  # with [v]erbose and [h]uman-readable [P]rogress
+  # [a]rchive = -rlptgoD (no -H,-A,-X) (copy sym[l]inks as symlinks, preserve [p]ermissions, preserve modification [t]imes, [g]roup of the destination file is the same as the source file, [o]wner of the destination file is the same as the source file, transfer character, special files and block [D]evice files to the remote system to recreate these devices)
+  rsync -rauvhP --delete --backup --backup-dir="../shiryel_data_backups/$(date +%m-%d-%Y)/" \
+    --exclude '/0' --exclude '/etc/virtual_box_vms' --exclude '.Trash-*' --filter="dir-merge,- .gitignore" \
+    "$1/" "rsync://shiryel@$ip/appdata/backup/shiryel_data/"
+}
+
+backup_contabo_server() {
+  rsync -av --delete -e ssh shiryel@66.94.107.204:/data "~/data/etc/contabo_server_backup_$(date +%m-%d-%Y)"
+}
+
+proton() {
+  # Run example: proton run /path/to/game.exe
+  export STEAM_COMPAT_DATA_PATH=~/.proton
+  /home/shiryel/data/Jogos/SteamLibrary/steamapps/common/Proton\ 5.13/proton $@
+}
+
+postgres() {
+	podman run --name postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -v pgdata:/var/lib/postgresql/data -d postgres
+}
+
+#
+# ffmpeg https://gist.github.com/Vestride/278e13915894821e1d6f
+#
+
+ffmpeg_slice() {
+  if [[ $# -ne 4 ]]; then
+    echo "only can have the input, start, end, output"
+    return
+  fi
+
+  ffmpeg -i "$1" -c:a copy -c:v copy -ss "$2" -to "$3" "$4"
+}
+
+ffmpeg_265_low_quality() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+
+  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30,scale_vaapi=w=1280:h=720' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
+}
+
+ffmpeg_265_medium_quality() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+
+  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
+}
+
+ffmpeg_vp9() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    echo "if you want to slice the file do it before using using ffmpeg_slice"
+    return
+  fi
+  # https://trac.ffmpeg.org/wiki/Encode/VP9
+  ffmpeg -i "$1" -c:v libvpx-vp9 -b:v 0 -crf 22 -pass 1 -preset fast -an -b:v 2600k -y -f null /dev/null && \
+  ffmpeg -i "$1" -c:v libvpx-vp9 -b:v 0 -crf 22 -pass 2 -preset fast -an -b:v 2600k -b:a 64k -c:a libopus "$2".webm
+}
+
+ffmpeg_audio_only() {
+  if [[ $# -ne 2 ]]; then
+    echo "needs the input file and output file (use ffprobe to find stream format)" 
+    echo "eg: input-video.avi output-audio.mp3"
+    return
+  fi
+
+  ffmpeg -i "$1" -vn -acodec copy "$2"
+}
+
+envup() {
+  [ -f .env ] && set -o allexport; source .env; set +o allexport
+}
+
+nixup() {
+  # ln -s `nix eval nixos.libatomic_ops.outPath` /lib/libatomic.so.1
+  # or use `patchelf --replace-needed`
+
+  rm -r /lib/*
+  
+  gcc_path=$(nix eval nixpkgs.gcc-unwrapped.lib.outPath | tr -d '"')
+  gcc_libs=($(ls "${gcc_path}/lib/"))
+  for l in ${gcc_libs[*]}; do
+    ln -vs "$gcc_path/lib/$l" "/lib/$l"
+  done
+}
+
+ksync() {
+  tar cf - . | kubectl exec shinken -i catcher -v "$1"
+}
+
+scan() {
+  if [[ $# -ne 1 ]]; then
+    echo "choose the file eg.: 'scan ~/'"
+    return
+  fi
+  echo "only scaning the current path's filesystem!"
+
+  clamscan -r --detect-pua=yes --heuristic-scan-precedence=yes --alert-broken=yes --alert-broken-media=yes \
+    --alert-macros=yes --alert-phishing-cloak=yes --cross-fs=no --suppress-ok-results -log="scan.log" "$1"
+}
+
+p_strings() {
+  if [[ $# -ne 1 ]]; then
+    echo "choose the process eg.: 'nm-applet'"
+    return
+  fi
+  strings /proc/$(pidof "$1")/environ
+}
+
+redpanda() {
+  if [[ $# -ne 1 ]]; then
+    echo "configure kafka:"
+    echo "redpanda URL:PORT USERNAME PASSWORD"
+    return
+  fi
+  docker run -p 8080:8080 -e KAFKA_BROKERS="$1" -e KAFKA_TLS_ENABLED=false -e KAFKA_SASL_ENABLED=true -e KAFKA_SASL_USERNAME="$2" -e KAFKA_SASL_PASSWORD="$3" docker.redpanda.com/vectorized/console:latest
+  echo "access with: localhost:8080"
+}
+
+nix-depends-on-installed () {
+  nix-store --query --referrers $(which $1)
+}
+
+nix-dependencies-installed () {
+  nix-store --query --references $(which $1)
+}
+
+nix-depends-on () {
+  nix-store --query --referrers\
+    $(nix-instantiate '<nixpkgs>' -A $1)
+}
+
+nix-dependencies () {
+  nix-store --query --references\
+    $(nix-instantiate '<nixpkgs>' -A $1)
+}
+
+nix-outPath () {
+  nix eval "nixpkgs/nixos-unstable#legacyPackages.x86_64-linux.${1}.outPath"
+}
+
+#####################
+# LESS / MAN COLORS #
+#####################
+
+export LESS=-R
+export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
+export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
+export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+export LESS_TERMCAP_so=$'\E[01;44;33m' # begin reverse video
+export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+########
+# MISC #
+########
+
+# fix ctrl + left/right
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+
+########
+# Deer #
+########
+
+# https://github.com/Vifon/deer
+autoload -U deer
+zle -N deer
+bindkey '\ek' deer
+typeset -Ag DEER_KEYS
+DEER_KEYS[leave]=n
+#DEER_KEYS[leave]='^[[D'
+DEER_KEYS[down]=e
+#DEER_KEYS[down]='^[[B'
+DEER_KEYS[up]=o
+#DEER_KEYS[up]='^[[A'
+DEER_KEYS[enter]=i
+#DEER_KEYS[enter]='^[[C'
