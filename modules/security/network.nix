@@ -24,7 +24,7 @@
 #   https://github.com/DNSCrypt/dnscrypt-proxy/issues/941
 #
 # DOCS:
-# - https://nixos.wiki/wiki/Encrypted_DNS
+# - https://wiki.nixos.org/wiki/Encrypted_DNS
 # - https://wiki.archlinux.org/title/Systemd-networkd
 #
 ###########################################################

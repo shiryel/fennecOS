@@ -14,10 +14,10 @@
 #   https://www.android-x86.org/documentation/debug.html
 #
 # DOCS:
-# - https://nixos.wiki/wiki/Virt-manager
+# - https://wiki.nixos.org/wiki/Virt-manager
 # - https://www.youtube.com/watch?v=wxxP39cNJOs
-# - https://nixos.wiki/wiki/Libvirt
-# - https://nixos.wiki/wiki/OSX-KVM
+# - https://wiki.nixos.org/wiki/Libvirt
+# - https://wiki.nixos.org/wiki/OSX-KVM
 # - https://discourse.nixos.org/t/networkd-libvirt-bridged-networking-how/11769/4
 # - http://ayekat.ch/blog/qemu-networkd
 #
