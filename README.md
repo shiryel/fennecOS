@@ -53,7 +53,7 @@ sudo nixos-rebuild switch --flake .#generic
 
 ## Inspiration
 
-You can get started with flakes here: https://nixos.wiki/wiki/Flakes
+You can get started with flakes here: https://wiki.nixos.org/wiki/Flakes
 Also, you may want to take a look on the flakes that I took inspiration:
 - https://github.com/ners/NixOS
 - https://github.com/balsoft/nixos-config

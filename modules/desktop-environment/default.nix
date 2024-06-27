@@ -64,7 +64,7 @@ in
     ###########
 
     services = {
-      # https://nixos.wiki/wiki/PipeWire
+      # https://wiki.nixos.org/wiki/PipeWire
       # Use `pw-profiler` to profile audio and `pw-top`
       # to see the outputs and quantum/rate
       # quantum/rate*1000 = ms delay
