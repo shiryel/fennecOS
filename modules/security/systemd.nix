@@ -44,8 +44,8 @@ in
     gvfs-udisks2-volume-monitor.serviceConfig = PrivateNetwork // RestrictSUIDSGID // ProtectControlGroups // ProtectKernelTunables;
     gpg-agent.serviceConfig = PrivateNetwork;
     podman.serviceConfig = ProtectKernelTunables;
+    opensnitch-ui.serviceConfig = ProtectHomeAsRO; # // PrivateNetwork; # needs dev
     # TODO
-    opensnitch-ui.serviceConfig = ProtectHomeAsTmp; # // PrivateNetwork; # needs dev
     xdg-desktop-portal-gtk.serviceConfig = { }; # Can't PrivateNetwork=yes
     xdg-desktop-portal-wlr.serviceConfig = { }; # Can't PrivateNetwork=yes
     xdg-desktop-portal.serviceConfig = { }; # Can't PrivateNetwork=yes

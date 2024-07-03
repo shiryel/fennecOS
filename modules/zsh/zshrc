@@ -436,6 +436,15 @@ ffmpeg_slice() {
   ffmpeg -i "$1" -c:a copy -c:v copy -ss "$2" -to "$3" "$4"
 }
 
+ffmpeg_264_quality() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+
+  ffmpeg -i "$1" -vcodec libx264 -acodec aac "$2"
+}
+
 ffmpeg_265_low_quality() {
   if [[ $# -ne 2 ]]; then
     echo "only can have the input and output"

@@ -54,6 +54,16 @@ assert builtins.hasAttr "snitchAllowPath" lib;
   # OpenSnich Firewall #
   ######################
 
+  systemd.user.services.opensnitch-ui = {
+    description = "Opensnitch ui";
+    after = [ "graphical-session-pre.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.opensnitch-ui}/bin/opensnitch-ui";
+    };
+  };
+
   services = {
     opensnitch = {
       enable = true;

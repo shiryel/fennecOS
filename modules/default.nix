@@ -12,7 +12,6 @@ in
     ./security
     ./virtualisation
     ./hardware.nix
-    ./home-manager.nix
   ];
 
   options.myNixOS = {
@@ -30,7 +29,6 @@ in
   };
 
   config = {
-    myHM.toAllUsers.home.stateVersion = cfg.stateVersion;
     system.stateVersion = cfg.stateVersion;
 
     ###############

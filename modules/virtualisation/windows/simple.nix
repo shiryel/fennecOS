@@ -22,19 +22,25 @@
       path = with pkgs; [ kmod qemu procps ];
 
       serviceConfig = {
-        LimitMEMLOCK = 25000000;
-        #NoNewPrivileges = true; # never gain new privileges through execve()
-        #RemoveIPC = true; # System V and POSIX IPC are removed when stopped (only has an effect with DynamicUser)
-        #ProtectClock = false;
-        #ProtectKernelModules = true;
-        #ProtectControlGroups = true;
-        #ProtectKernelLogs = true;
-        #ProtectSystem = "full"; # makes /boot, /etc, and /usr directories read-only
-        #BindPaths = "/keep/data/qemu";
-        #ProtectHome = "tmpfs"; # required by BindPaths
-        #PrivateUsers = true; # required by ProtectHome
-        #PrivateTmp = true; # makes /tmp and /var/tmp private
-        #RestrictSUIDSGID = true; # attempts to set the set-user-ID (SUID) or set-group-ID (SGID) bits on files or directories will be denied 
+        #LimitMEMLOCK = 25000000;
+        LimitFSIZE="infinity";
+        LimitCPU="infinity";
+        #LimitAS="infinity";
+        LimitMEMLOCK="infinity";
+        LimitNOFILE=64000;
+        LimitNPROC=64000;
+        NoNewPrivileges = true; # never gain new privileges through execve()
+        RemoveIPC = true; # System V and POSIX IPC are removed when stopped (only has an effect with DynamicUser)
+        ProtectClock = false;
+        ProtectKernelModules = true;
+        ProtectControlGroups = true;
+        ProtectKernelLogs = true;
+        ProtectSystem = "full"; # makes /boot, /etc, and /usr directories read-only
+        BindPaths = "/home/shiryel/data/qemu";
+        ProtectHome = "tmpfs"; # required by BindPaths
+        PrivateUsers = true; # required by ProtectHome
+        PrivateTmp = true; # makes /tmp and /var/tmp private
+        RestrictSUIDSGID = true; # attempts to set the set-user-ID (SUID) or set-group-ID (SGID) bits on files or directories will be denied 
       };
     };
 }

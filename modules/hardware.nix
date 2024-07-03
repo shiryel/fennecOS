@@ -43,11 +43,9 @@ in
     ];
 
     hardware = {
-      opengl = {
+      graphics = {
         enable = true;
-        # dri 32/64 support required for STEAM
-        driSupport = true; # adds Vulkan by default
-        driSupport32Bit = true;
+        enable32Bit = true; # required by steam
         #setLdLibraryPath = true;
 
         # https://nixos.org/manual/nixos/unstable/#sec-gpu-accel

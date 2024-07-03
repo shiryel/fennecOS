@@ -81,6 +81,20 @@ in
           autoBindHome = false;
           dbusProxy = {
             enable = true;
+            user = {
+              # see: https://github.com/flathub/com.valvesoftware.Steam/blob/beta/com.valvesoftware.Steam.yml
+              #owns = [
+              #  "com.steampowered.*"
+              #];
+              talks = [
+                "org.freedesktop.Notifications"
+                "org.kde.StatusNotifierWatcher"
+
+                "org.freedesktop.portal.Desktop" # always required
+                "org.freedesktop.portal.OpenURI"
+                # "org.freedesktop.UDisks2" # Used by wine to enumerate disk drives
+              ];
+            };
           };
           rwBinds =
             [
@@ -91,7 +105,8 @@ in
                 to = "$HOME/";
               }
               "$HOME/.config/MangoHud/MangoHud.conf"
-              "/keep/games"
+              "$HOME/games/steam_custom_games"
+              "/tmp/.X11-unix/X0"
             ];
           extraConfig = [
             # Fix games breaking on wayland
@@ -104,22 +119,11 @@ in
             "--unsetenv NIXOS_OZONE_WL"
             # Proton-GE
             "--setenv STEAM_EXTRA_COMPAT_TOOLS_PATHS ${
-            # fixes many games, including:
-            # - Age of Empires II online out of sync errors
-            pkgs.stdenv.mkDerivation rec {
-              pname = "proton-ge-custom";
-              version = "GE-Proton8-25";
-
-              src = pkgs.fetchurl {
-                url = "https://github.com/GloriousEggroll/proton-ge-custom/releases/download/${version}/${version}.tar.gz";
-                sha256 = "sha256-s3FgsnqzbgBo9zqwmsDJNjI8+TTG827bFxzWQr184Yo=";
-              };
-
-              buildCommand = ''
-                mkdir -p $out
-                tar -C $out --strip=1 -x -f $src
-              '';
-            }
+              lib.makeSearchPathOutput "steamcompattool" "" [
+              # fixes many games, including:
+              # - Age of Empires II online out of sync errors
+              pkgs.proton-ge-bin
+            ]
           }"
             # CUSTOM VR INTEGRATION
             # "--setenv VR_OVERRIDE ${pkgs.open-composite}"
@@ -145,7 +149,7 @@ in
                     pkgs'.gperftools
                   ] ++
                   # Fixes: dxvk::DxvkError
-                  (with config.hardware.opengl; if pkgs'.hostPlatform.is64bit
+                  (with config.hardware.graphics; if pkgs'.hostPlatform.is64bit
                   then [ package ] ++ extraPackages
                   else [ package32 ] ++ extraPackages32);
             });
@@ -157,9 +161,33 @@ in
             gamescope = gamescope;
             BeatSaberModManager = BeatSaberModManager;
             r2modman = r2modman;
-            #protontricks = protontricks;
+            protontricks = protontricks;
+            steam-run-external = p.steam-run; # need to be another name to not override the one used by protontricks
           };
         } // steam_common)
+
+        {
+          dri = true; # required for vulkan
+          net = true;
+          xdg = false; # if prefs.steam.vr_integration then true else "ro";
+          dbusProxy = {
+            enable = true;
+            user = {
+              talks = [
+                "org.freedesktop.Notifications"
+                "org.kde.StatusNotifierWatcher"
+                # "org.freedesktop.UDisks2" # Used by wine to enumerate disk drives
+              ];
+            };
+          };
+          packages = f: p: with p; {
+            heroic = heroic;
+          };
+          rwBinds = [
+            "$HOME/games/steam_custom_games"
+          ];
+          extraConfig = steam_common.extraConfig;
+        }
       ];
 
 

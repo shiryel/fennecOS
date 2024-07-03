@@ -1,33 +1,12 @@
 {
   "nodes": {
-    "home_manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1716457508,
-        "narHash": "sha256-ZxzffLuWRyuMrkVVq7wastNUqeO0HJL9xqfY1QsYaqo=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "850cb322046ef1a268449cf1ceda5fd24d930b05",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "master",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1716330097,
-        "narHash": "sha256-8BO3B7e3BiyIDsaKA0tY8O88rClYRTjvAp66y+VBUeU=",
+        "lastModified": 1719690277,
+        "narHash": "sha256-0xSej1g7eP2kaUF+JQp8jdyNmpmCJKRpO12mKl/36Kc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "5710852ba686cc1fd0d3b8e22b3117d43ba374c2",
+        "rev": "2741b4b489b55df32afac57bc4bfd220e8bf617e",
         "type": "github"
       },
       "original": {
@@ -39,11 +18,11 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1716361217,
-        "narHash": "sha256-mzZDr00WUiUXVm1ujBVv6A0qRd8okaITyUp4ezYRgc4=",
+        "lastModified": 1719663039,
+        "narHash": "sha256-tXlrgAQygNIy49LDVFuPXlWD2zTQV9/F8pfoqwwPJyo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "46397778ef1f73414b03ed553a3368f0e7e33c2f",
+        "rev": "4a1e673523344f6ccc84b37f4413ad74ea19a119",
         "type": "github"
       },
       "original": {
@@ -55,11 +34,11 @@
     },
     "nixpkgs-staging-next": {
       "locked": {
-        "lastModified": 1716573668,
-        "narHash": "sha256-K+8vYJtu7X+qQ1Q66kYTheq0IKKVyPMOMclY9oJYnS8=",
+        "lastModified": 1719856874,
+        "narHash": "sha256-a7zyJ9Jnv1UcyCJ0S4blbXP1ouuguqaFoGw11hEIFuo=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "cc5c0d369b5e8f49705e2a2d7464e4b162804805",
+        "rev": "1addc8dd4c469d3c52dbee0fd3e5bd1973c14527",
         "type": "github"
       },
       "original": {
@@ -71,7 +50,6 @@
     },
     "root": {
       "inputs": {
-        "home_manager": "home_manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-staging-next": "nixpkgs-staging-next"

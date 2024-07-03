@@ -39,6 +39,7 @@
     enable = true;
     openFirewall = lib.mkForce false;
     startWhenNeeded = true;
+    hostKeys = []; # do not generate any host keys
     settings = {
       PermitRootLogin = lib.mkForce "no";
       PasswordAuthentication = lib.mkForce false;

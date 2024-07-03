@@ -15,9 +15,9 @@ args=(
   #
   # maybe enable resoucecontrol for better performance ?
   -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny
-  `if [[ $USER ]]; then
-    echo -runas $USER
-  fi`
+  #`if [[ $USER ]]; then
+  #  echo -runas $USER
+  #fi`
 	#-nodefaults # remove all default devices
 
   #
@@ -44,7 +44,7 @@ args=(
   # MEMORY
   #
 	#-mem-path /dev/hugepages
-	-m 5G,slots=16,maxmem=21G
+	-m 10G,slots=16,maxmem=21G
   -overcommit mem-lock=off
 
   #
@@ -53,16 +53,16 @@ args=(
   # BUG: https://bugzilla.redhat.com/show_bug.cgi?id=2048429
   # A VM with 4 assigned devices in a vIOMMU configuration needs to 
   # be able to lock 4x the VM RAM size.
-  `if [[ $GPU_PASSTHROUGH ]]; then
-	  echo -nographic
-	  echo -vga none
-    # > x-vga=on - seems to be required if you’re using SeaBIO
-	  echo -device vfio-pci,host="$GPU_HOST",x-vga=on,multifunction=on
-	  echo -device vfio-pci,host="$GPU_AUDIO_HOST"
-  else
-    # > -vga qxl - for wayland to work with qemu
-    echo -vga qxl
-  fi`
+  #`if [[ $GPU_PASSTHROUGH ]]; then
+	#  echo -nographic
+	#  echo -vga none
+  #  # > x-vga=on - seems to be required if you’re using SeaBIO
+	#  echo -device vfio-pci,host="$GPU_HOST",x-vga=on,multifunction=on
+	#  echo -device vfio-pci,host="$GPU_AUDIO_HOST"
+  #else
+  #  # > -vga qxl - for wayland to work with qemu
+  #  echo -vga qxl
+  #fi`
 
   #
   # NETWORK
@@ -74,18 +74,18 @@ args=(
   # USB 
   #
   # NOTE: for hubs, use dots to separate, eg: hostport=2.1
-  -device qemu-xhci,id=xhci
+  #-device qemu-xhci,id=xhci
 
   # Kingston USB storage
-  -device usb-host,bus=xhci.0,vendorid=0x0951,productid=0x1666
+  #-device usb-host,bus=xhci.0,vendorid=0x0951,productid=0x1666
 
   # Oculus VR Rift S
-  -device usb-host,bus=xhci.0,vendorid=0x2833,productid=0x2052
+  #-device usb-host,bus=xhci.0,vendorid=0x2833,productid=0x2052
 
   #
   # SOUND
   #
-  #-device ES1370 # ENSONIQ AudioPCI ES1370
+  -device ES1370 # ENSONIQ AudioPCI ES1370
 
   #
   # MOUSE
@@ -96,12 +96,12 @@ args=(
   #
   # VOLUMES
   #
-  -hda /keep/data/qemu/windows10.qcow2
+  -hda ~/data/qemu/win10_64.qcow2
 
   #
   # CDROM
   #
-	-cdrom /keep/data/qemu/windows10.iso
+	-cdrom ~/data/qemu/win10_64.iso
 )
 
 #XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-:"/run/user/1001"} \

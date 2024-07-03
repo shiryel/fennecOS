@@ -5,10 +5,10 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-staging-next.url = "github:NixOS/nixpkgs/staging-next";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-23.11";
-    home_manager = {
-      url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #home_manager = {
+    #  url = "github:nix-community/home-manager/master";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
   };
 
   outputs = { self, ... }@inputs:
@@ -45,7 +45,7 @@
           };
         }
         ./modules
-        inputs.home_manager.nixosModules.home-manager
+        #inputs.home_manager.nixosModules.home-manager
       ];
 
       nixosConfigurations.default =

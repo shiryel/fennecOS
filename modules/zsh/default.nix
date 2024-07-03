@@ -22,7 +22,7 @@
   programs.command-not-found.enable = false;
 
   # do not ask to create .zshrc when can't find it, as it is passed direct to zsh from /nix/store
-  myHM.toAllUsers.home.file.".zshrc".text = "# Nothing here";
+  systemd.user.tmpfiles.rules = [ "L+ %h/.zshrc 777 - - - ${pkgs.writeText "zshrc" "# Nothing Here"}" ];
 
   programs = {
     # Zsh global config (super-seeded by home-manager)
@@ -33,17 +33,6 @@
       enableCompletion = true;
       autosuggestions.enable = true;
       syntaxHighlighting.enable = true;
-
-      # BUG: removed cursor, otherwise it disappears on alacritty
-      # - https://github.com/alacritty/alacritty/issues/538
-      # - https://github.com/alacritty/alacritty/issues/4975
-      #syntaxHighlighting.highlighters = [ "main" "brackets" "pattern" "root" "line" ];
-
-      # /etc/zshenv.local
-      shellInit = ''
-        # Environment variables from HM
-        . "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
-      '';
 
       # /etc/zprofile
       loginShellInit = ''
