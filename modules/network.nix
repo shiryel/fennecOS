@@ -196,7 +196,6 @@ assert builtins.hasAttr "snitchAllowPath" lib;
         cache_size = 8192;
         cache_min_ttl = 86400; # 1 day
         cache_max_ttl = 86400; # 1 day
-        #cache_max_ttl = 604800; # 7 days
         cache_neg_min_ttl = 60; # 1 min
         cache_neg_max_ttl = 600; # 10 min
 

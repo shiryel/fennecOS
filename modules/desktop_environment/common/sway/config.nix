@@ -149,7 +149,7 @@ pkgs.writeTextFile {
     bindsym $mod+x floating toggle
     bindsym $mod+m focus mode_toggle
     #bindsym $mod+v focus parent
-    bindsym $mod+v exec ${pkgs.sway}/bin/swaymsg 'output ${out_mid} position -10000 0'
+    bindsym $mod+v exec ${pkgs.sway}/bin/swaymsg 'output ${out_mid} position 10000 0'
     bindsym $mod+Shift+V exec ${pkgs.sway}/bin/swaymsg 'output ${out_mid} position 1080 950'
 
     # dangerous - 2/bottom

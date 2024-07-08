@@ -28,7 +28,7 @@ flake.nix              -- entry point, merges everything bellow
    |--> hardwares/*    -- configs specific by hardware
    |
    |--> modules/*      -- modules to compose the "profiles/*" and "hardwares/*",
-   |                   -- defines the custom "myNix" and "myHM" options
+   |                   -- defines the custom "myNix" options
    |
    |--> overlays/*     -- define new or override packages
    |--> lib/*          -- custom functions and abstractions for everything above (eg: bwrapIt)

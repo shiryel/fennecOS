@@ -53,10 +53,6 @@
     #    "-w /home/shiryel/keep/games -p rwxa"
     #  ];
     #};
-
-    # RealtimeKit is optional but recommended
-    # Hands out realtime scheduling priority to user processes on demand
-    rtkit.enable = true;
   };
 
   boot.blacklistedKernelModules = [

@@ -1,10 +1,6 @@
 final: prev: {
-  ######
-  # VR #
-  ######
-
   # https://github.com/ValveSoftware/SteamVR-for-Linux
-  steamvr_udev = prev.writeTextFile {
+  steamvr_udev = final.writeTextFile {
     name = "60-steam-vr-rules";
     text = ''
       KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="114d", ATTRS{idProduct}=="8a12", MODE="0660", TAG+="uaccess"
@@ -37,36 +33,20 @@ final: prev: {
     destination = "/lib/udev/rules.d/60-steam-vr.rules";
   };
 
-  #open-composite = prev.stdenv.mkDerivation {
-  #  pname = "open-composite";
-  #  version = "git";
-  #  src = prev.fetchFromGitLab {
-  #    owner = "znixian";
-  #    repo = "OpenOVR";
-  #    rev = "c5256a117f82c04e3f74cc8b3e2eb357f1425270";
-  #    sha256 = "sha256-0Es5FuEwu0L43VOYGdNBfxuBehlNx35ymjBUOG/pKLU=";
-  #    fetchSubmodules = true;
-  #  };
+  moonlander_udev = final.writeTextFile {
+    name = "moonlander-udev-rules";
+    text = ''
+      # Teensy rules for the Ergodox EZ
+      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", ENV{ID_MM_DEVICE_IGNORE}="1"
+      ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789A]?", ENV{MTP_NO_PROBE}="1"
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789ABCD]?", MODE:="0666"
+      KERNEL=="ttyACM*", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="04[789B]?", MODE:="0666"
 
-  #  # disable all warnings (they become errors)
-  #  NIX_CFLAGS_COMPILE = "-Wno-error -w";
-
-  #  nativeBuildInputs = with prev;[
-  #    cmake
-  #  ];
-
-  #  buildInputs = with prev; [
-  #    vulkan-loader
-  #    vulkan-headers
-  #    libGLU
-  #    python39
-  #    xorg.libX11
-  #  ];
-
-  #  enableParallelBuilding = true;
-
-  #  installPhase = ''
-  #    cp -r . $out
-  #  '';
-  #};
+      # STM32 rules for the Moonlander and Planck EZ
+      SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="df11", \
+        MODE:="0666", \
+        SYMLINK+="stm32_dfu"
+    '';
+    destination = "/lib/udev/rules.d/50-wally.rules";
+  };
 }

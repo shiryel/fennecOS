@@ -426,6 +426,14 @@ postgres() {
 #
 # ffmpeg https://gist.github.com/Vestride/278e13915894821e1d6f
 #
+# Check hardware encoders support with: ffprobe -encoders 2>&1 | grep vaapi
+# Check encoder options with: ffprobe -hide_banner -h encoder=av1_vaapi 
+
+# AV1 and Opus are probably the future standard, but some hardware still does not support it
+# https://trac.ffmpeg.org/wiki/Encode/AV1
+# https://www.ffmpeg.org/ffmpeg-codecs.html#AV1-Options
+# https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Video_codecs
+# https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_codecs
 
 ffmpeg_slice() {
   if [[ $# -ne 4 ]]; then
@@ -436,26 +444,18 @@ ffmpeg_slice() {
   ffmpeg -i "$1" -c:a copy -c:v copy -ss "$2" -to "$3" "$4"
 }
 
+
 ffmpeg_264_quality() {
   if [[ $# -ne 2 ]]; then
     echo "only can have the input and output"
     return
   fi
 
+  # h264 & aac are supported by almost everything
   ffmpeg -i "$1" -vcodec libx264 -acodec aac "$2"
 }
 
-ffmpeg_265_low_quality() {
-  if [[ $# -ne 2 ]]; then
-    echo "only can have the input and output"
-    return
-  fi
-
-  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
-  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30,scale_vaapi=w=1280:h=720' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
-}
-
-ffmpeg_265_medium_quality() {
+ffmpeg_265() {
   if [[ $# -ne 2 ]]; then
     echo "only can have the input and output"
     return
@@ -465,15 +465,24 @@ ffmpeg_265_medium_quality() {
   ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
 }
 
-ffmpeg_vp9() {
+ffmpeg_265_720p() {
   if [[ $# -ne 2 ]]; then
     echo "only can have the input and output"
-    echo "if you want to slice the file do it before using using ffmpeg_slice"
     return
   fi
-  # https://trac.ffmpeg.org/wiki/Encode/VP9
-  ffmpeg -i "$1" -c:v libvpx-vp9 -b:v 0 -crf 22 -pass 1 -preset fast -an -b:v 2600k -y -f null /dev/null && \
-  ffmpeg -i "$1" -c:v libvpx-vp9 -b:v 0 -crf 22 -pass 2 -preset fast -an -b:v 2600k -b:a 64k -c:a libopus "$2".webm
+
+  # https://trac.ffmpeg.org/wiki/Hardware/VAAPI
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf 'format=nv12,hwupload,fps=30,scale_vaapi=w=1280:h=720' -compression_level 1 -b:v 2600k -c:v hevc_vaapi -b:a 64k -c:a libopus "$2"
+}
+
+ffmpeg_av1() {
+  if [[ $# -ne 2 ]]; then
+    echo "only can have the input and output"
+    return
+  fi
+  echo "note that this format is not compatible with many devices yet"
+
+  ffmpeg -i "$1" -vaapi_device /dev/dri/renderD128 -vf "format=nv12,hwupload,fps=30" -global_quality:v 40 -c:v av1_vaapi  -c:a libopus "$2.webm"
 }
 
 ffmpeg_audio_only() {

@@ -34,6 +34,7 @@ in
     foliate # ebooks
     ffmpeg # (ranger, nautilus)
     ffmpegthumbnailer # (ranger, nautilus)
+    evince # PDF preview, note: if lagging interface try to add as dbus & systemd packages
     p7zip
     # TODO:
     # gnome-epub-thumbnailer

@@ -43,6 +43,7 @@ rec {
         else append module acc
       ) [ ])
     listToAttrs
+    attrValues
   ];
 
   ###########

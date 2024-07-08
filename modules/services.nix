@@ -1,8 +1,66 @@
 { lib, pkgs, ... }:
 
 {
-  services.dbus.apparmor = "enabled";
-  #boot.tmp.cleanOnBoot = true;
+  #########
+  # Extra #
+  #########
+
+  programs.ccache.enable = true;
+  environment.wordlist.enable = true;
+
+  #################
+  # GENERAL FIXES #
+  #################
+
+  programs = {
+    neovim.enable = false;
+  };
+
+  # Fixes android file transfer, nautilus and 
+  # https://wiki.archlinux.org/title/Java#Java_applications_cannot_open_external_links
+  #services.gvfs.enable = true;
+
+  # lets android devices connect
+  services.udev.packages = [ pkgs.android-udev-rules ];
+  users.groups.adbusers = { }; # To enable device as a user device if found (add an "android" SYMLINK)
+
+  #########
+  # AUDIO #
+  #########
+
+  # https://nixos.wiki/wiki/PipeWire
+  # Use `pw-profiler` to profile audio and `pw-top`
+  # to see the outputs and quantum/rate
+  # quantum/rate*1000 = ms delay
+  # eg: 3600/48000*1000 = 75ms
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+    wireplumber.enable = true;
+  };
+
+  ############
+  # SECURITY #
+  ############
+
+  security.sudo.execWheelOnly = false; # btrbk needs this false to work
+
+  # test with: sudo apparmor_status
+  security.apparmor.enable = true;
+
+  services.dbus = {
+    apparmor = "enabled";
+    implementation = "broker"; # dbus-broker is the default on Arch & Fedora
+  };
+
+  security = {
+    # RealtimeKit is optional but recommended
+    # Hands out realtime scheduling priority to user processes on demand
+    rtkit.enable = true; # NOTE: enables polkit!
+  };
 
   # Trimming enables the SSD to more efficiently handle garbage collection,
   # which would otherwise slow future write operations to the involved blocks.
@@ -37,12 +95,17 @@
   # SSH DAEMON (to do connections)
   services.openssh = {
     enable = true;
+    allowSFTP = false;
     openFirewall = lib.mkForce false;
     startWhenNeeded = true;
-    hostKeys = []; # do not generate any host keys
+    hostKeys = [ ]; # do not generate any host keys
     settings = {
       PermitRootLogin = lib.mkForce "no";
       PasswordAuthentication = lib.mkForce false;
+      X11Forwarding = false;
+      AllowAgentForwarding = "no";
+      AllowStreamLocalForwarding = "no";
+      AuthenticationMethods = "publickey";
     };
   };
 

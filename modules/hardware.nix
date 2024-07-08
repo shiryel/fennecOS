@@ -28,6 +28,23 @@ in
       { assertion = elem cfg.gpu [ "amd" "intel" "nvidia" "unknow" ]; message = "Invalid GPU"; }
     ];
 
+    ##########
+    # Mounts #
+    ##########
+
+    # use `findmnt -l` to see the fileSystems
+    services.btrfs.autoScrub.enable = true;
+    services.btrfs.autoScrub.interval = "monthly";
+
+    # Use the systemd-boot EFI boot loader.
+    # NOTE: some aditional modules are added were they were due
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+
+    #######
+    # CPU #
+    #######
+
     # CPU security
     hardware.cpu.amd.updateMicrocode = cfg.cpu == "amd";
 
@@ -38,9 +55,17 @@ in
 
     # Some softwares require these paths for hardware acceleration or for using python GPU libs
     systemd.tmpfiles.rules = [
-      "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
-      "L+    /opt/amdgpu   -    -    -     -    ${pkgs.libdrm}"
+      "L+ /opt/rocm/hip - - - - ${pkgs.rocmPackages.clr}"
+      "L+ /opt/amdgpu - - - - ${pkgs.libdrm}"
     ];
+
+    #######
+    # GPU #
+    #######
+
+    # recompiles some software with support to AMD GPU
+    # eg: https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/tools/system/btop/default.nix#L12
+    nixpkgs.config.rocmSupport = cfg.gpu == "amd";
 
     hardware = {
       graphics = {
@@ -72,10 +97,6 @@ in
           # fixes `WLR_RENDERER=vulkan sway`
           #vulkan-validation-layers
         ];
-        #extraPackages32 = with pkgs; [
-        #  driversi686Linux.vaapiIntel
-        #  driversi686Linux.libvdpau-va-gl
-        #];
       };
     };
 
@@ -83,26 +104,15 @@ in
       glxinfo # glxgears
       vulkan-tools # vulkaninfo
       clinfo
-      # vulkan-loader
-      # vulkan-headers
-      # vulkan-extension-layer
 
       rocmPackages.rocminfo
       rocmPackages.rocm-smi # ROCm System Management Interface 
     ];
 
-    # RADV is faster: https://www.phoronix.com/review/radv-amdvlk-mid22
-    # NOTE: DO NOT ADD VK_ICD_FILENAMES by default, but you can add it to a game or app to test:
-    # VK_ICD_FILENAMES="/run/opengl-driver-32/share/vulkan/icd.d/radeon_icd.i686.json:/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json"
-    #environment.variables = {
-    #  AMD_VULKAN_ICD = "RADV";
-    #};
-
-    services.dbus.packages = [ pkgs.corectrl ];
-    users.groups.corectrl = { };
-
     # Overclock/Fan Control of CPU/GPU
     #programs.corectrl.enable = true;
+    #services.dbus.packages = [ pkgs.corectrl ];
+    #users.groups.corectrl = { };
     #users.extraGroups.corectrl.members = [ "shiryel" ];
   };
 }

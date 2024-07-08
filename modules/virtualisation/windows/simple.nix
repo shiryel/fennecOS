@@ -23,12 +23,12 @@
 
       serviceConfig = {
         #LimitMEMLOCK = 25000000;
-        LimitFSIZE="infinity";
-        LimitCPU="infinity";
+        LimitFSIZE = "infinity";
+        LimitCPU = "infinity";
         #LimitAS="infinity";
-        LimitMEMLOCK="infinity";
-        LimitNOFILE=64000;
-        LimitNPROC=64000;
+        LimitMEMLOCK = "infinity";
+        LimitNOFILE = 64000;
+        LimitNPROC = 64000;
         NoNewPrivileges = true; # never gain new privileges through execve()
         RemoveIPC = true; # System V and POSIX IPC are removed when stopped (only has an effect with DynamicUser)
         ProtectClock = false;
