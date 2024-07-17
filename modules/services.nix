@@ -71,10 +71,10 @@
 
   # antivirus clamav and keep the signatures' database updated
   # see: https://github.com/anoadragon453/dotfiles/blob/de37bcd64f702b16115fb405f559e979a1e0260e/modules/base/antivirus.nix#L69
-  services = {
-    clamav.daemon.enable = true;
-    clamav.updater.enable = true;
-  };
+  #services = {
+  #  clamav.daemon.enable = true;
+  #  clamav.updater.enable = true;
+  #};
 
   #######
   # SSH #

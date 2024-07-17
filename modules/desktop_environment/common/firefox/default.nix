@@ -84,6 +84,7 @@ let
       "toolkit.telemetry.cachedClientID" = ""; # Mozilla's telemetry
       "network.trr.mode" = 5; # To turn off Firefox's new "partnership" with Cloudflare
       "clipboard.autocopy" = false; # disable mouse middle click clipboard
+      "dom.private-attribution.submission.enabled" = false; # don't send data to Mozilla
 
       # Tells website where you came from. Disabling may break some sites.
       # 0 = Disable referrer headers, 1 = Send only on clicked links, 2 = (default) Send for links and image.

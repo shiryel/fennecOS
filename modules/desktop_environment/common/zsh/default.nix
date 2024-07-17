@@ -28,7 +28,7 @@
     # Zsh global config (super-seeded by home-manager)
     zsh = {
       enable = true;
-      histSize = 500000;
+      histSize = 5000000;
       vteIntegration = false;
       enableCompletion = true;
       autosuggestions.enable = true;
@@ -36,18 +36,6 @@
 
       # /etc/zprofile
       loginShellInit = ''
-        cat <<EOF >> "$HOME/.logs"
-        ================================================
-        `date +%m-%d-%Y@%H:%M`
-        ================================================
-        BOOT INTEGRINITY (to verify after using windows)
-        `sha256sum /boot/EFI/systemd/systemd-bootx64.efi`
-        `sha256sum /boot/EFI/BOOT/BOOTX64.EFI`
-        `sha256sum /boot/EFI/nixos/*initrd.efi`
-        `sha256sum /boot/EFI/nixos/*bzImage.efi`
-        ================================================
-        EOF
-
         if [ "$(tty)" = "/dev/tty1" ]; then
           mv ".sway_errors.log" "$HOME/.sway_errors.log_old"
           exec sway 2> "$HOME/.sway_errors.log"
